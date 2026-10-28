@@ -1,0 +1,3 @@
+registration: https://osf.io/8hmtz
+doi: 10.17605/OSF.IO/8HMTZ
+approved: 2026-10-08 14:25 (OSF "Date Registered"; approved by the author, archive complete; DOI resolves)

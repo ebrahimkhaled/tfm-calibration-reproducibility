@@ -1,0 +1,46 @@
+{
+ "time": "2026-10-08T14:40:57",
+ "python": "3.11.15",
+ "platform": "Windows-10-10.0.26200-SP0",
+ "numpy": "2.4.6",
+ "scipy": "1.17.1",
+ "pandas": "2.3.3",
+ "pyarrow": "24.0.0",
+ "lightgbm": "4.7.0",
+ "scikit-learn": "1.9.1",
+ "torch": "2.13.0+cu126",
+ "tabpfn": "9.1.0",
+ "tabicl": "2.2.0",
+ "autogluon.tabular": "1.6.3",
+ "huggingface_hub": "1.33.0",
+ "cuda_available": true,
+ "gpu": "NVIDIA GeForce GTX 1660 Ti",
+ "r": {
+  "R": "4.4.1",
+  "ebrahim.gof": "2.10.0",
+  "givitiR": "1.3",
+  "callr": "3.7.6",
+  "logistf": "1.26.1",
+  "glmnet": "4.1.10",
+  "mgcv": "1.9.4",
+  "pmsampsize": "1.1.3",
+  "arrow": "23.0.1.2",
+  "data.table": "1.18.2.1",
+  "digest": "0.6.39",
+  "jsonlite": "2.0.0"
+ },
+ "checkpoints": {
+  "tabpfn/tabpfn-v3.5-20260909.safetensors": "ece4d67eadfea42eb0e610df5189bea60cb7f31073d81e9c7a019b76eacf0be3",
+  "tabpfn/tabpfn-v3.5-fast-20260909.safetensors": "14e0b81285bca7a6d1ef121169f27f651f76dff49cad6c0b8779d5c836018550",
+  "tabpfn/tabpfn-v2-classifier-finetuned-zk73skhh.ckpt": "cf8c519c01eaf1613ee91239006d57b1c806ff5f23ac1aeb1315ba1015210e49"
+ },
+ "hf_checkpoints": {
+  "jingang/TabICL/tabicl-classifier-v2-20260212.ckpt": "bdc7dbd5e4ff21f8f0456fcf90c6b7cdf72dbea960f2d05b19bec19f9b3d4ed0",
+  "autogluon/mitra-classifier-2/model.safetensors": "5ffab0e2cf52f61c5b7c7eb1e8542996736d1023a0212190cc09abc2119a1e09"
+ },
+ "tabpfn_main_arm": {
+  "model_version": "V3_5",
+  "path": "models/tabpfn/tabpfn-v3.5-20260909.safetensors"
+ },
+ "mismatches": []
+}

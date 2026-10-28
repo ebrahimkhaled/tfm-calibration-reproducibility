@@ -1,0 +1,3783 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  10pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Calibration of tabular foundation models versus logistic regression for clinical risk prediction: pre-registration of a simulation study and a real-data analysis},
+  pdfauthor={Ebrahim Khaled Ebrahim},
+  colorlinks=true,
+  linkcolor={black},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={black},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Calibration of tabular foundation models versus
+logistic regression for clinical risk prediction:
+pre-registration of a simulation study and a real-data
+analysis}
+\author{Ebrahim Khaled Ebrahim}
+\date{2026-10-08}
+
+\begin{document}
+\maketitle
+
+\textbf{Status.} Version 1.0, the final text for deposit.
+The protocol is frozen at the moment it is registered on OSF
+Registries. The registration must be made before the first
+replicate of the main simulation run is written to disk; the
+run scripts refuse to start until the registration is
+recorded (Section 9.4). After the registration this file is
+never edited. Every later change goes into
+\texttt{DEVIATIONS.md}, dated, with its reason (Section 12).
+
+\textbf{Author.} Ebrahim Khaled Ebrahim (sole author),
+ebrahimkhaled@alexu.edu.eg, ORCID 0009-0006-7839-8778.
+
+\textbf{Affiliation.} Department of Applied Statistics,
+Faculty of Business, Alexandria University, Alexandria,
+Egypt.
+
+\textbf{Structure.} The simulation part follows the ADEMP
+structure of Morris, White and Crowther (2019): Aims,
+Data-generating mechanisms, Estimands, Methods, Performance
+measures. The registration uses the OSF Registries
+``Simulation Studies'' template, which follows the same
+structure (Siepe et al.~2024).
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{0. What was done and seen before this
+registration}\label{what-was-done-and-seen-before-this-registration}
+
+\subsubsection{0.1 Work before the
+freeze}\label{work-before-the-freeze}
+
+Before this text was frozen, the following work was done.
+All of it used data that the main run never uses.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{An earlier, unpublished pilot by the same author.}
+  It used 3 replicates per scenario and small test sets. It
+  is superseded, and no result from it is used.
+\item
+  \textbf{An oracle size study of the external tests}
+  (\texttt{R/size\_check.R}).
+
+  \begin{itemize}
+  \tightlist
+  \item
+    2,000 replicates in each of 12 scenarios, with
+    predictions equal to the true risk.
+  \item
+    It used its own coefficients and its own random stream,
+    not the main design's.
+  \item
+    It is an auxiliary check (Section 5.3).
+  \end{itemize}
+\item
+  \textbf{A Phase-1 pilot of this study} (2026-10-07):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    every model arm on 6 scenarios x 20 replicates, then the
+    full goodness-of-fit layer;
+  \item
+    TabPFN-3.5 on 5 scenarios x 20 replicates;
+  \item
+    timing and memory runs.
+  \item
+    The pilot \textbf{computed and inspected calibration
+    summaries}: true slope and intercept, true ICI, and the
+    rejection rates of the tests. They informed the changes
+    listed in Section 0.2.
+  \end{itemize}
+\item
+  \textbf{A read-only study of the external Stukel test}
+  (Section 5.3), with its own random stream.
+\item
+  \textbf{A final smoke run} of every arm, the scoring and
+  the test layer: 2 scenarios x 2 replicates (Section 9.2).
+\item
+  \textbf{A size study of the new Stukel row} of
+  \texttt{ebrahim.gof} 2.10.0 at commit 19480aa (Section
+  5.3): 4,000 nulls per cell, in the null design and with
+  the seeds of item 4.
+\item
+  \textbf{Two engineering checks for the random-design tier}
+  (Section 3.9), on the smoke stream:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    a GPU memory and time probe of the three TFMs at 16 (n,
+    p, predicted rows) cells on synthetic data, which sets
+    the device rules;
+  \item
+    the classical arms and the test layer on 50 random
+    designs (R0006-R0055), which give the per-fit costs used
+    to choose D.
+  \item
+    Neither check computed or inspected a calibration
+    summary.
+  \end{itemize}
+\item
+  \textbf{A second smoke run} (Section 9.2): every arm on 2
+  core scenarios x 2 replicates and on 5 random designs
+  (R0001-R0005), then the scoring and the test layer at
+  commit 19480aa.
+\end{enumerate}
+
+\textbf{Separate seed streams.}
+
+\begin{itemize}
+\tightlist
+\item
+  The pilot and the smoke runs drew every data set from
+  \texttt{SeedSequence({[}scenario\_id,\ n\_index,\ rep,\ 777{]})}.
+\item
+  The main run draws from
+  \texttt{SeedSequence({[}scenario\_id,\ n\_index,\ rep{]})}.
+\item
+  The random designs (Section 3.9) draw from a stream of
+  their own,
+  \texttt{SeedSequence({[}4242,\ 2,\ d,\ rep{]})}; their
+  smoke data add 777.
+\item
+  The main run never touches the 777 stream.
+\item
+  Every main-run data set carries a SHA-256 fingerprint,
+  which is asserted before every downstream step (Section
+  3.8). A pilot file therefore cannot enter the main
+  results.
+\end{itemize}
+
+\subsubsection{0.2 Changes made before the freeze, and
+why}\label{changes-made-before-the-freeze-and-why}
+
+Each row was decided by the author on 2026-10-07, after the
+pilot. Rows marked ``pilot'' were informed by the pilot's
+calibration summaries. They are design decisions made before
+the main run, not deviations.
+
+On 2026-10-08, before the freeze, the author changed the
+draft's confirmatory hypotheses into an estimation-focused
+protocol with pre-specified research questions and fixed
+reporting rules (Section 7), by his own choice to describe
+and estimate rather than test predictions, so that the
+results determine the conclusions within rules fixed in
+advance.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1176}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1176}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2206}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2941}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\#
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Item
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Before
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+After (this registration)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Why
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+C1 & Slope at small n (question Q1) & The plan of 2026-10-06
+expected the median true slope b* of each TFM to exceed 1.1
+at n \textless= 500 and pi = 10 \% in all four shapes (TFMs
+under-confident) & No expected direction. Q1 estimates each
+TFM's b* and its paired distance from 1 against FLIC on the
+log scale, with the main cells at n \textless= 500 and pi =
+10 \%, and labels the direction it finds by a fixed rule
+(Section 7.1) & Pilot. In the two qualifying cells (S2 and
+T3 at pi = 10 \%, n = 500), the TFM medians were 0.88-1.11
+(MCSE 0.05-0.09), against FLIC's 0.84-0.86. At n = 200, pi =
+3 \%, every classical arm was over-confident (FLIC 0.49) and
+the TFMs were less so (0.71-1.00). These values informed the
+emphasis of Q1: a paired comparison with FLIC, with both
+directions labelled, in place of a single threshold of
+1.1. \\
+C2 & Rare events (question Q3) & The plan of 2026-10-06
+expected each TFM to have a larger \textbar a*\textbar{}
+than FLIC at pi = 3 \% at every n & No expected direction.
+Q3 estimates the paired \textbar a*\textbar{} difference
+against FLIC at pi = 3 \% at every n, shows the cells at n
+\textgreater= 1000 first and each TFM's shipped softmax
+temperature beside its result, and the temperature arms
+estimate the temperature's effect directly (Section 7.3) &
+Pilot. The sign depended on the temperature. At
+S4\_pi03\_n3000, TabICLv2 and TabPFN v2 (both T = 0.9) had
+a* = 0.29-0.32, against FLIC 0.02, Mitra-v2 0.00 and
+TabPFN-3.5 0.02. At n = 200, no TFM had a larger
+\textbar a*\textbar{} than FLIC. These values informed the
+emphasis of Q3 on n \textgreater= 1000 and on the
+temperature. \\
+C3 & Primary TabPFN arm & ``TabPFN-3.5 if its licence is
+accepted, else the newest ungated checkpoint'' & TabPFN-3.5
+standard checkpoint, pinned by version and SHA-256 (Section
+5.2) & The author accepted the licence, and the checkpoints
+are in place. The choice between the standard and Fast
+checkpoints is justified by timing in Section 5.2. \\
+C4 & Temperature arms & TabPFN at T = 1.0 on 8 scenarios, R
+= 200 & \texttt{tabpfn\_t1} = TabPFN-3.5 at T = 0.9. A new
+arm \texttt{tabicl\_t1} = TabICLv2 at T = 1.0. Both on the
+same 8 scenarios with R = 100. & Pilot. TabPFN-3.5 already
+ships at T = 1.0, so the old arm would repeat the main arm.
+TabICLv2 and TabPFN v2 ship at T = 0.9, which multiplies
+every logit by 1/0.9 (measured slope 1.1105-1.1109) and
+lowers the mean risk by 0.012-0.017. \\
+C5 & LightGBM + Platt & Platt scaling as fitted & A Platt
+slope \textless= 0 keeps the raw LightGBM scores (flag
+\texttt{platt\_fallback}) & Pilot. At n = 200, pi = 3 \%, a
+negative Platt slope reversed the ranking in 3 of 20
+replicates. \\
+C6 & Ridge-CV lambda path & glmnet's default path & 200
+log-spaced values from glmnet's lambda\_max down to 1e-6 x
+lambda\_max, with the early path stop switched off; an
+optimum at either end is flagged & Pilot. The default path
+stopped early, and the CV optimum sat at its lower end in 19
+of 20 fits at S3\_pi30\_n1000. With the new path it was
+interior in 49 of 50 smoke fits; the one exception is at the
+upper end (the null model), and it is flagged. \\
+C7 & Degenerate fits & Scored as ``ok'' & Labelled
+``degenerate'', scored, kept and counted (Section 8.2) &
+Pilot. At n = 200, pi = 3 \%, more than 100 predictions sat
+at 0 or 1 in 12 of 20 GAM fits and 8 of 20 LR-MLE fits. \\
+C8 & Mitra-v2 at T2, n = 3000 & Run like every scenario &
+Recorded as ``does not fit in 6 GB GPU memory''. It is not
+run there, and its context is never cut (Section 5.2). &
+Pilot. 20 of 20 fits ran out of memory. A CPU fit had not
+finished 100 rows after 15 minutes. \\
+C9 & Device of TabPFN-3.5 & GPU, or CPU workers & Whole
+scenario groups run on CPU workers, declared in Section 9.3.
+T2\_pi10\_n3000 always runs on the CPU. & Pilot. TabPFN-3.5
+runs out of GPU memory at T2, n = 3000. CPU and GPU
+predictions agree to 2.6e-4. The schedule needs the CPU
+workers to finish in about 3 days. \\
+C10 & Replicates and test settings & TFMs R = 200
+everywhere; legacy V2 R = 200; DeepGOF-1 B = 199 on real Y
+and Y*; the battery on every classical replicate & Schedule
+P4 (Section 6.3): TFMs R = 200 at n \textless= 1000 and R =
+150 at n = 3000; classical R = 500; legacy V2 R = 100;
+DeepGOF-1 B = 99 on real Y only, with the axes reading only
+in T2; the battery on every arm for reps 1-R, and on the
+oracle only for reps R+1 to 500 & Compute budget measured in
+the pilot: the plan as written needed 4.0-4.7 days \\
+C11 & Stukel (offset) & One of the battery tests & Its size
+is reported beside its power, as for every test. The
+exclusion from the detection ranking decided earlier the
+same day is withdrawn by C21: the row is now the score test,
+and it is ranked like the other tests (Section 5.3). & The
+size study: 0.063 pooled at N = 3,334. The Stukel study
+traced this to the likelihood-ratio statistic of its
+upper-tail term, which the score form replaces. \\
+C12 & The size study (review D5) & The 2,000-replicate
+oracle study was the size study & The main size study is the
+main run's own oracle nulls; the earlier study is auxiliary
+(Section 5.3) & The earlier study used its own
+coefficients \\
+C13 & True ICI (review D6) & One loess estimator & The
+pre-registered loess estimator stays primary.
+\texttt{true\_ll\_ici} is reported beside it, and the oracle
+row gives the loess floor (Section 4.1). & The loess of p*
+on logit p-hat cannot follow the logistic curve: the oracle
+gets 0.0008-0.0029, while \texttt{true\_ll\_ici} is 0 for
+it \\
+C14 & Class thresholds at pi = 3 \% (review D6) & Absolute
+thresholds & The probability-scale thresholds are multiplied
+by 0.3 at pi = 3 \% (Section 4.5) & At a mean risk of 0.03
+the absolute thresholds were met by arms that failed
+``weak'' \\
+C15 & Few-event failures (review D8) & General pairing rule
+& The pairing rule names the known few-event failures
+(Section 8.2) & Ridge needs 3 events and LightGBM 2; the m =
+100 ladder can draw 0 events \\
+C16 & Mitra categoricals (review D9) & ``Declared
+categorical to every TFM'' & Mitra-v2 receives integer codes
+(Section 5.1) & Its interface has no categorical argument \\
+C17 & e200 subsample (review D13) & Every event rate & pi =
+30 \% only (Section 5.3) & It needs 200/pi rows: more than
+N\_eval at 3 \% and 10 \% \\
+C18 & Test package & ebrahim.gof 2.9.0 (+ localization from
+2.10.0) & ebrahim.gof 2.10.0, which adds an ``Osius-Rojek
+(external)'' row to \texttt{run.all.external()} & A
+release-branch build that has every function used \\
+C19 & LightGBM software & R \texttt{lightgbm} & Python
+LightGBM 4.7.0, the same library, with the same grid and
+early-stopping rule & R \texttt{lightgbm} is not in the
+project library \\
+C20 & GOF output files & csv & gzip-compressed csv
+(\texttt{.csv.gz}); the reader handles both & Disk use \\
+C21 & Package commit and the Stukel (offset) row &
+\texttt{ebrahim.gof} 2.10.0 at commit 2c77f3c. Stukel
+(offset) is the likelihood-ratio test, liberal at low event
+rates (0.061-0.078). It is excluded from the detection
+ranking: an exception in the size rule, and left out of the
+detection comparisons, the detection curves and the ranking
+in the summary tables. & 2.10.0 at commit \textbf{19480aa}.
+Stukel (offset) is the \textbf{score test} of the same two
+terms at the null (columns scaled to their information,
+rank-aware inverse, df = 1 when no prediction reaches 0.5).
+Its size is 0.035-0.053 in 4,000 nulls per cell (pi = 3, 10
+and 30 \%; normal and t3 risks), with a p-value in every
+replicate (Section 5.3). Stukel is in the size question
+(Q4a) with no exception, and in the detection curves and the
+summary tables, ranked like every other test. The test layer
+refuses any build but 19480aa (Section 5.3). & The author
+changed the package on 2026-10-07 after the Stukel study.
+The likelihood ratio was liberal (0.061-0.078); the score
+form holds its size. \\
+C22 & Random-design robustness tier & None: 58 fixed
+scenarios & A robustness tier of D = 1,000 randomly drawn
+designs, one replicate each, with a pre-specified meta-model
+and a transfer check (Sections 3.9, 6.4 and 7.6) & The
+conclusions of a fixed factorial can be challenged as
+depending on the chosen settings. The tier draws every
+setting at random and checks whether the conclusions carry
+over. \\
+C23 & Outputs for reuse & Per-replicate predictions
+deposited & (a) the per-replicate predictions and test
+results released as an open benchmark, with a loader and a
+data dictionary; (b) a calibration audit in one call, in R
+and from Python; (c) a minimum-n-for-calibration table by
+event rate for every model, as a primary output; (d) a
+TRIPOD+AI alignment table. TabPFN weights are never archived
+(Section 14). & Reuse by practitioners and methodologists \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{1. Background and
+rationale}\label{background-and-rationale}
+
+Tabular foundation models (TFMs) such as TabPFN, Mitra and
+TabICL predict a binary outcome in context. They read the
+development sample as a prompt and return a probability for
+each new row, with no gradient fitting on the user's data.
+They are being tried for clinical risk prediction. There,
+calibration (agreement between predicted and actual risk)
+decides whether a prediction can be used for a clinical
+decision.
+
+Recent studies report TFM calibration with the Brier score,
+log-loss, expected calibration error, conformal coverage or
+a calibration plot read by eye. None of them does the
+following five things, and this study does:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  score TFM predictions against the true risk;
+\item
+  check the size of the external-validation goodness-of-fit
+  tests on the TFMs' own prediction distributions;
+\item
+  localize the miscalibration in the risk range or in
+  covariate subgroups;
+\item
+  place TFMs on the calibration hierarchy of Van Calster et
+  al.~(2016) and on the sample-size criteria of Riley et
+  al.~(2020);
+\item
+  evaluate a test-guided recalibration rule.
+\end{enumerate}
+
+Two further parts make the results easier to trust and to
+reuse. A tier of randomly drawn designs checks whether the
+conclusions depend on the chosen scenarios (Section 3.9).
+The predictions, a minimum-n table and a one-call
+calibration audit are released for others to use (Section
+14).
+
+\textbf{Prior information, disclosed.} Section 0 lists
+everything that was run and seen before this registration,
+and which design choices it informed. The pilot also
+informed the emphasis of research questions Q1 and Q3
+(Section 7). The protocol predicts the direction of no
+result.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{2. Aims}\label{aims}
+
+\textbf{A1.} Quantify how far TFM risk predictions are from
+the true risk, as a function of development sample size and
+event rate. The comparators are Firth logistic regression
+with intercept correction (FLIC), maximum-likelihood
+logistic regression, ridge regression, a generalized
+additive model and LightGBM.
+
+\textbf{A2.} Find, for each model arm, the smallest
+development size at which it reaches pre-specified
+calibration targets (``minimum n for calibration''), and
+compare it with Riley's minimum sample size.
+
+\textbf{A3.} Measure the size (type I error) and the
+detection rate of the external-validation goodness-of-fit
+tests when they are applied to each arm's frozen
+predictions.
+
+\textbf{A4.} Measure how often the localization procedure
+names the correct source of miscalibration when a known
+covariate interaction is missed.
+
+\textbf{A5.} Measure how much a small local sample repairs
+calibration (a recalibration ladder), and whether a
+test-guided rule picks the right level.
+
+\textbf{A6.} Check on real clinical data (Section 10)
+whether the patterns found in A1-A5 appear in real patients.
+
+\textbf{A7.} Check whether the conclusions of A1 and A3 hold
+across the design space, on randomly drawn designs (Section
+3.9), and map the regions where each TFM is better or worse
+calibrated than FLIC.
+
+\textbf{A8.} Give practitioners and methodologists outputs
+they can reuse (Section 14):
+
+\begin{itemize}
+\tightlist
+\item
+  a minimum-n-for-calibration table by event rate for each
+  model (a primary output, Section 11);
+\item
+  a calibration audit in one call for any model's
+  predictions;
+\item
+  the full per-replicate predictions and test results as an
+  open benchmark;
+\item
+  an alignment of the reporting with TRIPOD+AI.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Data-generating mechanisms
+(simulation)}\label{data-generating-mechanisms-simulation}
+
+\subsubsection{3.1 Covariates}\label{covariates}
+
+The core design has eight covariates:
+
+\begin{itemize}
+\tightlist
+\item
+  X1, \ldots, X6 continuous, marginally N(0, 1); corr(X1,
+  X2) = 0.5; all other pairs independent;
+\item
+  X7 \textasciitilde{} Bernoulli(0.5);
+\item
+  X8 \textasciitilde{} Bernoulli(0.3).
+\end{itemize}
+
+\subsubsection{3.2 Outcome models
+(shapes)}\label{outcome-models-shapes}
+
+Let
+\texttt{L\ =\ 1.0\ X1\ +\ 0.8\ X2\ +\ 0.6\ X3\ +\ 0.4\ X4\ +\ 0.2\ X5\ +\ 0.0\ X6\ +\ 0.5\ X7\ +\ 0.3\ X8}
+be the base linear term (X6 is a pure noise covariate).
+Then:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3167}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Shape
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+True linear predictor eta
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Link
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Correctly specified arms
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+S1 linear & alpha + kappa L & logit & LR-MLE, FLIC, Ridge,
+GAM \\
+S2 smooth non-linear & alpha + kappa {[}L + gamma ((X1\^{}2
+- 1)/sqrt(2) + (X3\^{}3 - 3 X3)/sqrt(6)){]}, gamma = 0.5 &
+logit & GAM \\
+S3 interactions & alpha + kappa {[}L + 0.5 X1 X7 + 0.5 X3
+X4{]} & logit & none of the statistical arms as fitted (main
+effects only) \\
+S4 asymmetric link & alpha + kappa L & complementary
+log-log: p* = 1 - exp(-exp(eta)) & none \\
+\end{longtable}
+}
+
+The true risk of a row is p* = logit\^{}\{-1\}(eta) in
+S1-S3, and 1 - exp(-exp(eta)) in S4. The outcome is Y
+\textasciitilde{} Bernoulli(p*).
+
+In S3, the interaction X1 x X7 defines the \emph{true
+miscalibrated subgroup}. Patients with X7 = 1 have a steeper
+risk gradient in X1 than any main-effects model can
+represent. This subgroup is the target of the localization
+analysis (Sections 5.4 and 11).
+
+These formulas are implemented in \texttt{code/dgp.py}. An
+independent re-implementation from this text agreed with it
+to 5.6e-16 on all 58 scenarios.
+
+\subsubsection{3.3 Signal strength and event
+rate}\label{signal-strength-and-event-rate}
+
+\begin{itemize}
+\tightlist
+\item
+  For each shape (and each severity gamma in the stress
+  set), the scale factor kappa is solved numerically on
+  10\^{}6 fixed draws, so that the oracle AUC (the AUC of
+  p*) is 0.80 at an event rate of 10 \%.
+\item
+  For each shape and each event rate pi in \{3 \%, 10 \%, 30
+  \%\}, the intercept alpha is then solved on the same draws
+  so that E{[}p*{]} = pi.
+\item
+  The realized prevalence equals pi to 2e-15 in every
+  scenario.
+\item
+  Because kappa is fixed at 10 \%, the oracle AUC is
+  0.77-0.83 at 3 \% and 30 \%.
+\item
+  The solved values and the realized oracle AUC of every
+  scenario are listed in Appendix A.
+\end{itemize}
+
+\subsubsection{3.4 Development sample
+size}\label{development-sample-size}
+
+n in \{200, 500, 1000, 3000\}. Each scenario is also
+reported in two ways:
+
+\begin{itemize}
+\tightlist
+\item
+  as events per variable (EPV = n pi / p);
+\item
+  against Riley et al.'s (2020) minimum sample size for a
+  binary outcome, computed with the R package
+  \texttt{pmsampsize} (expected shrinkage 0.9, Cox-Snell
+  R\^{}2 from the oracle AUC, p parameters).
+\end{itemize}
+
+The scenario n = 200 at pi = 3 \% (about 6 events, EPV 0.75)
+is kept on purpose: it is the regime where TFMs might help.
+Degenerate fits there are an outcome, not a reason to drop
+the scenario.
+
+\subsubsection{3.5 Core factorial}\label{core-factorial}
+
+4 shapes x 3 event rates x 4 sizes = \textbf{48 core
+scenarios} (ids 1-48).
+
+\subsubsection{3.6 Stress set}\label{stress-set}
+
+At pi = 10 \% and n in \{500, 3000\}, five stress types (10
+scenarios, ids 49-58):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.7500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1250}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ID
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Change from the core design
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Shape
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+T1 & X1-X6 drawn as Student t with 3 df through a Gaussian
+copula (X1 and X2 keep correlation 0.5), scaled to unit
+variance & S1 \\
+T2 & p = 30: the 8 core covariates plus 22 independent N(0,
+1) noise columns & S1 \\
+T3 & X8 replaced by a 6-level categorical with equal level
+probabilities and level effects (0, 0.3, -0.3, 0.6, -0.6,
+0.9) inside L. It is declared categorical to TabPFN and
+TabICL, given as integer codes to Mitra-v2, and dummy-coded
+for the statistical arms. & S3 \\
+T4a & S2 with severity gamma = 0.25 & S2 \\
+T4b & S2 with severity gamma = 1.0 & S2 \\
+\end{longtable}
+}
+
+Together with S2 at gamma = 0.5, T4a and T4b form a severity
+ladder for detection-power curves.
+
+\textbf{Total: 58 scenarios.} Each has a fixed integer
+\texttt{scenario\_id} (Appendix A).
+
+\subsubsection{3.7 Data drawn per
+replicate}\label{data-drawn-per-replicate}
+
+Each replicate draws the following sets, independently and
+fresh:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Set
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Size
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Use
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Development & n & fitting, or the context of a TFM \\
+Evaluation & N\_eval = max(1000, ceil(100/pi)): 3,334 at 3
+\%, 1,000 at 10 \% and 30 \% & oracle estimands (p* known)
+and the test battery on fresh Y; at least 100 expected
+events (Riley et al.~2021) \\
+Recalibration & 500 & recalibration ladder; the m = 100
+level uses the first 100 rows \\
+\end{longtable}
+}
+
+A \textbf{probe set} of 500 rows per scenario is drawn once,
+from \texttt{SeedSequence({[}scenario\_id,\ 99999{]})}, and
+is the same in every replicate. It is used for the
+prediction-instability plots.
+
+Smaller validation samples are nested subsamples of the
+stored evaluation rows (the first ceil(50/pi) and
+ceil(200/pi) rows); no model is refitted. The e50 subsample
+exists at every event rate. The e200 subsample exists only
+at pi = 30 \%, because at 3 \% and 10 \% it would need more
+rows than N\_eval.
+
+\subsubsection{3.8 Random numbers and
+fingerprints}\label{random-numbers-and-fingerprints}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Data.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Every data set is drawn in Python from
+    \texttt{numpy.random.SeedSequence({[}scenario\_id,\ n\_index,\ rep{]})},
+    with rep \textgreater= 1.
+  \item
+    The seed is spawned into independent child streams for
+    the development, evaluation and recalibration draws.
+  \item
+    Model seeds and null-outcome seeds come from the same
+    entropy with fixed arm codes.
+  \item
+    The pilot and smoke stream adds a fourth entry, 777
+    (Section 0.1).
+  \end{itemize}
+\item
+  \textbf{Fingerprints.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A SHA-256 fingerprint of the bytes of (X, p*, Y) of
+    every set is stored with the replicate.
+  \item
+    Every downstream step recomputes and asserts it before
+    using the data: adding an arm, scoring, and the R
+    layer's cross-file checks. A mismatch stops the run.
+  \item
+    Two replicates with identical data in one run stop the
+    run, which would catch a hidden reset of the random
+    stream.
+  \end{itemize}
+\item
+  \textbf{R procedures.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Procedures that draw random numbers (the Monte Carlo
+    references of \texttt{localize.external()} and
+    \texttt{deepgof1.external()}, glmnet fold assignment,
+    null outcomes drawn in R) receive an explicit integer
+    seed. The seed is derived from a string naming the
+    scenario, replicate, arm and test.
+  \item
+    The generator is reset to Mersenne-Twister before each
+    such call.
+  \item
+    Equal outcome fingerprints across replicates of a
+    scenario are reported as an error.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{3.9 Random-design robustness
+tier}\label{random-design-robustness-tier}
+
+\textbf{Purpose.} The 58 scenarios fix every factor at a few
+levels. A reader may ask whether the conclusions hold away
+from those levels. In this tier every design draws its own
+setting, so that the conclusions can be checked across the
+whole design space, and the regions where they fail can be
+mapped (Sections 6.4 and 7.6).
+
+\textbf{Design.} D = 1,000 designs
+(\texttt{R0001}-\texttt{R1000}), each with \textbf{one
+replicate}. Design d draws its setting from
+\texttt{SeedSequence({[}4242,\ 0,\ d{]})}:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.4000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Factor
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Distribution
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+event rate pi & log-uniform on {[}0.02, 0.40{]} \\
+development size n & log-uniform on {[}150, 4000{]},
+rounded \\
+number of predictors p & integer uniform on {[}4, 30{]} \\
+predictor correlation rho & uniform on {[}0, 0.6{]} \\
+oracle AUC target & uniform on {[}0.65, 0.90{]} \\
+severity of non-linearity w\_nl, of interaction w\_int, of
+link asymmetry w\_link & each uniform on {[}0, 1{]} \\
+fraction of binary or categorical predictors & uniform on
+{[}0, 0.5{]} \\
+\end{longtable}
+}
+
+\textbf{Covariates.}
+
+\begin{itemize}
+\tightlist
+\item
+  A latent Gaussian vector with exchangeable correlation
+  rho.
+\item
+  Of the p predictors, round(fraction x p) are discrete and
+  the rest are continuous (the latent values).
+\item
+  Each discrete predictor is categorical with probability
+  0.25 (3-6 levels, equal probabilities, cut at normal
+  quantiles of its latent value); otherwise it is binary,
+  1\{z \textgreater{} q\}, with a prevalence drawn on
+  {[}0.2, 0.5{]}.
+\item
+  Categorical predictors are declared to the TFMs and coded
+  for the statistical arms as in T3 (Section 5.1).
+\end{itemize}
+
+\textbf{Outcome.} The shape is a random mixture built from
+the core design's own shape generators
+(\texttt{code/dgp.py}):
+
+\begin{itemize}
+\tightlist
+\item
+  The linear term L has coefficients drawn per design: a
+  random sign, a size uniform on {[}0.2, 1{]}, and each
+  predictor after the second is pure noise with probability
+  0.25; categorical levels get N(0, 0.5\^{}2) effects. L is
+  rescaled to the SD of the core design's L (1.755), so that
+  the weights below mean what gamma means in the core
+  design.
+\item
+  N is S2's non-linear term at gamma = 1, and I is S3's
+  interaction term (Section 3.2), both evaluated by
+  \texttt{dgp.shape\_score} on the design's predictors in
+  the core roles: x1 = the first continuous predictor, x3 =
+  the second, x4 = the third (the first if there are only
+  two), x7 = the first binary predictor (1\{z \textgreater{}
+  0\} of the last continuous predictor if there is none).
+\item
+  eta = alpha + kappa {[}L + w\_nl N + w\_int I{]}, and p* =
+  (1 - w\_link) logit\^{}\{-1\}(eta) + w\_link (1 -
+  exp(-exp(eta))): w\_link = 1 is S4's complementary log-log
+  link.
+\item
+  kappa is solved so that the oracle AUC equals the design's
+  target at its own event rate, and alpha so that E{[}p*{]}
+  = pi, on 200,000 calibration draws from
+  \texttt{SeedSequence({[}4242,\ 1,\ d{]})}. Every design
+  was solved: the realized prevalence equals pi to 6e-14,
+  and the oracle AUC equals its target to 2e-10.
+\end{itemize}
+
+\textbf{Data per design.}
+
+\begin{itemize}
+\tightlist
+\item
+  Development set of size n.
+\item
+  Evaluation set sized as in the core design: N\_eval =
+  max(1000, ceil(100/pi)), so at least 100 expected events
+  (1,000-5,000 rows).
+\item
+  No recalibration or probe set: there is one replicate and
+  no recalibration ladder.
+\item
+  The data come from
+  \texttt{SeedSequence({[}4242,\ 2,\ d,\ 1{]})}, a stream
+  that the core design and the pilot never use, and they
+  carry the same SHA-256 fingerprints as the core design
+  (Section 3.8).
+\end{itemize}
+
+\textbf{Arms.} Oracle, LR-MLE, FLIC, Ridge-CV, GAM, LightGBM
++ Platt (with its raw column), \textbf{TabPFN-3.5 (the main
+arm)}, TabICLv2 and Mitra-v2, with the settings of Section
+5.2. There are no legacy or temperature arms and no
+recalibration ladder.
+
+\textbf{Device rules} (measured on the 6 GB card with the
+run's 0.8 memory cap: pilot Section 2 and
+\texttt{results/random\_memory\_probe.csv}):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{TabPFN-3.5} holds the development rows and the
+  predicted rows together, so its size is (n + N\_eval) x p,
+  not n x p alone: a 1,500 x 20 design with 5,000 predicted
+  rows ran out of memory, while 4,000 x 8 with 2,000
+  predicted rows fitted. Every measured cell up to 84,000
+  fitted (peak 4.4 GB), and every cell from 99,000 up ran
+  out of memory. A design runs TabPFN-3.5 on the GPU when (n
+  + N\_eval) x p \textless= 80,000, and on a CPU worker
+  otherwise (179 of the 1,000 designs). The device is
+  recorded per design; CPU and GPU predictions agree to
+  2.6e-4 (Section 5.2).
+\item
+  \textbf{Mitra-v2} predicts in batches, and its memory
+  grows with n\^{}2 x p: every measured cell up to 8.0e7
+  fitted (2,000 x 20 at 4.1 GB, 3,000 x 8 at 3.7 GB), and
+  every cell from 9.4e7 up failed (2,500 x 15, 3,500 x 8,
+  4,000 x 6, and T2 at 3,000 x 30). Above n\^{}2 x p = 8.0e7
+  Mitra-v2 is \textbf{recorded as ``does not fit in 6 GB GPU
+  memory''}, by the rule used for T2\_pi10\_n3000 (170 of
+  the 1,000 designs). It is not run there, and its context
+  is never cut. Its meta-model covers only the designs where
+  it ran, and that region is reported.
+\end{itemize}
+
+\textbf{Test layer.} As in the core design (Section 5.3), at
+B = 99, with one change of reading: DeepGOF-1 uses the axes
+reading when the design has more than 12 predictors, and the
+combined reading otherwise. In the core design this rule
+picks out exactly T2.
+
+\textbf{Files.} The solved designs are in
+\texttt{code/random\_designs.csv}
+(\texttt{python\ code/dgp\_random.py\ build\ -\/-D\ 1000};
+\texttt{check} re-solves them and compares). Appendix B
+summarizes them.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Estimands}\label{estimands}
+
+All oracle estimands are computed on the evaluation set of
+each replicate, where the true risk p* of every row is
+known. Predictions p-hat are clipped to {[}1e-6, 1 - 1e-6{]}
+for every computation. The number of predictions within 1e-6
+of 0 or 1 is recorded per arm and replicate.
+
+\subsubsection{4.1 Primary estimands
+(oracle)}\label{primary-estimands-oracle}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{True calibration slope b*.} The slope of a
+  quasi-binomial generalized linear model of p* on
+  logit(p-hat), with a logit link.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    b* \textgreater{} 1 means under-confidence (predictions
+    too close to the mean).
+  \item
+    b* \textless{} 1 means over-confidence.
+  \end{itemize}
+\item
+  \textbf{True calibration intercept a*.} The intercept of a
+  quasi-binomial model of p* with offset logit(p-hat) and no
+  slope (calibration-in-the-large on the logit scale).
+\item
+  \textbf{True integrated calibration index (true ICI).} The
+  mean over evaluation rows of \textbar p-hat -
+  c(p-hat)\textbar.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    c(.) is a loess fit (degree 2, span 0.75, Gaussian
+    family, no robustness iterations, exact fit as R's
+    \texttt{surface\ =\ "direct"}) of \textbf{p*} (not Y) on
+    logit(p-hat), evaluated at the evaluation rows.
+  \item
+    This loess cannot follow the logistic curve exactly, so
+    the estimator has a floor: 0.0008-0.0029 for the oracle
+    in the pilot.
+  \item
+    The oracle row is reported in every table as that floor.
+  \item
+    The \textbf{log-scale version \texttt{true\_ll\_ici}} is
+    reported beside it. It smooths logit p* on logit p-hat
+    and maps back. It is exactly 0 for the oracle, and it
+    equals the OCE whenever logit p* is linear in logit
+    p-hat.
+  \item
+    The true ICI remains the primary estimand.
+  \end{itemize}
+\end{enumerate}
+
+\subsubsection{4.2 Further oracle estimands
+(secondary)}\label{further-oracle-estimands-secondary}
+
+\begin{itemize}
+\tightlist
+\item
+  True E50, E90 and E\_max: the median, 90th percentile and
+  maximum of \textbar p-hat - c(p-hat)\textbar.
+\item
+  \textbf{Oracle calibration error (OCE)} = mean
+  \textbar p-hat - p*\textbar. It is the individual-level
+  error. It separates ``miscalibrated'' from ``calibrated on
+  average but poorly resolved''.
+\item
+  Mean p-hat minus mean p* (calibration-in-the-large on the
+  probability scale).
+\item
+  True discrimination: the expected AUC of p-hat against p*,
+  and the oracle AUC.
+\end{itemize}
+
+\subsubsection{4.3 Empirical estimands
+(secondary)}\label{empirical-estimands-secondary}
+
+These are computed with the observed Y on the evaluation
+set, as a real validation study would:
+
+\begin{itemize}
+\tightlist
+\item
+  empirical ICI, E50, E90 and E\_max (Austin and Steyerberg
+  2019: loess of Y on logit(p-hat), degree 2, no robustness
+  iterations);
+\item
+  empirical calibration slope (joint fit of Y on
+  logit(p-hat)) and calibration-in-the-large (offset fit);
+\item
+  Brier score, log-loss and AUC;
+\item
+  10-bin expected calibration error (reported only for
+  comparison with the machine-learning literature);
+\item
+  the gap between empirical and true ICI per replicate (how
+  wrong a typical validation estimate is).
+\end{itemize}
+
+\subsubsection{4.4 Prediction instability
+(secondary)}\label{prediction-instability-secondary}
+
+On the fixed probe set: the per-patient spread of p-hat
+across replicates (standard deviation and 2.5-97.5 \% range)
+(Riley and Collins 2023).
+
+\subsubsection{4.5 Calibration class of each
+replicate}\label{calibration-class-of-each-replicate}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2833}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Class
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Rule (pi = 10 \% and 30 \%)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Rule at pi = 3 \%
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+mean & abs(mean p-hat - mean p*) \textless= 0.01 &
+\textless= 0.003 \\
+weak & abs(a*) \textless= 0.1 and abs(b* - 1) \textless= 0.1
+& the same \\
+moderate & true ICI \textless= 0.015 & \textless= 0.0045 \\
+strong-approx & true E90 \textless= 0.03 & \textless=
+0.009 \\
+\end{longtable}
+}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Relative thresholds at 3 \%.} At pi = 3 \% the
+  three probability-scale thresholds are multiplied by pi /
+  0.10 = 0.3, because the absolute values are easy to meet
+  when the mean risk is 0.03. The weak rule is on the logit
+  scale and is not changed.
+\item
+  \textbf{Nesting.} The classes are nested, as in the
+  hierarchy of Van Calster et al.~(2016). An (arm,
+  replicate) is placed in the highest class whose rule holds
+  \emph{together with every lower rule}. Each rule is also
+  stored on its own.
+\item
+  \textbf{Sensitivity.} The class-based results are repeated
+  at half and at double every threshold, and with
+  \texttt{true\_ll\_ici} in place of the true ICI.
+\end{itemize}
+
+\textbf{Minimum n for calibration} of an arm in a (shape,
+pi, class) is the smallest n in \{200, 500, 1000, 3000\} at
+which the arm meets the class in at least 80 \% of
+replicates. If no n qualifies, the value is ``\textgreater{}
+3000''.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{5. Methods (model
+arms)}\label{methods-model-arms}
+
+\subsubsection{5.1 Common rules}\label{common-rules}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Paired design.} Every arm is fitted on the
+  \emph{same} development set of a replicate. It predicts
+  the same evaluation, recalibration and probe rows.
+\item
+  \textbf{No tuning on evaluation data.} No arm is tuned on
+  evaluation or recalibration data. The TFMs are used with
+  their shipped settings and are not tuned at all. The only
+  exception is the softmax temperature of the two
+  temperature arms.
+\item
+  \textbf{Categorical covariates.} The binary covariates and
+  the 6-level factor of T3 are declared categorical to
+  TabPFN (\texttt{categorical\_features\_indices}) and to
+  TabICLv2 (pandas categories). \textbf{Mitra-v2 receives
+  them as integer codes}, because its interface has no
+  categorical argument; this is how AutoGluon itself passes
+  categoricals to Mitra.
+\item
+  \textbf{Provenance.} Every version, checkpoint file,
+  revision hash and SHA-256 is recorded per replicate and in
+  \texttt{results/environment.json} (Section 13).
+\end{itemize}
+
+\subsubsection{5.2 Arms}\label{arms}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4833}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Arm (code name)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Implementation
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Role
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Settings
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Oracle (\texttt{oracle}) & p* itself & defines the null and
+the truth & the ``perfect model'' row; the main size study
+(Section 5.3) \\
+LR-MLE (\texttt{lr}) & R \texttt{stats::glm}, binomial,
+logit, main effects & classical reference & separation is
+flagged, not hidden \\
+\textbf{FLIC} (\texttt{flic}) & R
+\texttt{logistf::logistf(...,\ flic\ =\ TRUE,\ pl\ =\ FALSE)}
+(Puhr et al.~2017), main effects & \textbf{primary
+statistical reference} & package defaults \\
+Ridge-CV (\texttt{ridge}) & R \texttt{glmnet}, alpha = 0,
+lambda = \texttt{lambda.min} by 10-fold CV deviance, folds
+stratified on Y & penalization arm & \textbf{lambda path:}
+200 log-spaced values from glmnet's own lambda\_max down to
+1e-6 x lambda\_max, with glmnet's early path stop
+(\texttt{fdev}) switched off for this fit;
+\texttt{lambda\_at\_edge} flags an optimum at either end \\
+GAM (\texttt{gam}) & R \texttt{mgcv::gam}, REML,
+\texttt{s(x,\ k\ =\ 5)} for each continuous covariate,
+linear binary and factor terms & flexible statistical arm &
+correctly specified for S2 \\
+LightGBM + Platt (\texttt{lgbm}), and raw
+(\texttt{lgbm\_raw}) & Python LightGBM 4.7.0 &
+machine-learning reference & 5-fold stratified CV over
+num\_leaves in \{7, 15, 31\} x min\_data\_in\_leaf in \{10,
+30\}, learning rate 0.05, up to 2,000 rounds with early
+stopping after 50; refit on all n at the CV-best setting and
+round count. \textbf{Platt scaling} is a logistic fit of Y
+on the logit of the out-of-fold scores, applied to the
+refit. \textbf{If the Platt slope is \textless= 0, the arm
+keeps the raw LightGBM scores and records
+\texttt{platt\_fallback}}. A Platt fit that does not
+converge is a failure. Isotonic scaling appears only in the
+ladder. \\
+\textbf{TabPFN-3.5} (\texttt{tabpfn}) & \texttt{tabpfn}
+9.1.0, \texttt{ModelVersion.V3\_5}, checkpoint
+tabpfn-v3.5-20260909 (file, repository, revision and SHA-256
+in Section 13) & primary TFM & shipped settings:
+\texttt{n\_estimators} ``auto'' and softmax temperature
+\textbf{1.0}, both recorded per replicate; pinned by version
+(\texttt{V3\_5}) and SHA-256 \\
+TabPFN-3.5 at T = 0.9 (\texttt{tabpfn\_t1}) & the same
+checkpoint, \texttt{softmax\_temperature\ =\ 0.9}, the same
+seed as \texttt{tabpfn} & temperature arm & 8 scenarios
+(S1-S4 at pi = 10 \%, n in \{200, 3000\}), R = 100 \\
+Real-TabPFN-2, legacy (\texttt{tabpfn\_legacy}) &
+\texttt{tabpfn} 9.1.0, \texttt{ModelVersion.V2}, its default
+classifier checkpoint (file, repository and SHA-256 in
+Section 13) & link to the earlier TabPFN literature &
+shipped settings (8 estimators, T = 0.9); the 16 core
+scenarios at pi = 10 \%, R = 100 \\
+\textbf{TabICLv2} (\texttt{tabicl}) & \texttt{tabicl} 2.2.0,
+checkpoint tabicl-classifier-v2-20260212 (file, repository,
+revision and SHA-256 in Section 13) & third TFM family &
+shipped settings (8 estimators, softmax temperature
+\textbf{0.9}). Its documented lower bound is 300 training
+rows, so results at n = 200 are reported and flagged. \\
+TabICLv2 at T = 1.0 (\texttt{tabicl\_t1}) & the same
+checkpoint, \texttt{softmax\_temperature\ =\ 1.0}, the same
+seed as \texttt{tabicl} & temperature arm & the same 8
+scenarios, R = 100 \\
+\textbf{Mitra-v2} (\texttt{mitra}) &
+\texttt{MitraClassifier} from \texttt{autogluon.tabular}
+1.6.3, weights autogluon/mitra-classifier-2 (revision and
+SHA-256 in Section 13) & second TFM family & in-context only
+(no fine-tuning, \texttt{n\_estimators\ =\ 1}), with the
+whole development set as context. A 16-row validation set
+taken from the development rows is passed only so that
+AutoGluon holds nothing out; it does not change the
+predictions. See below for precision, sign flips and the T2
+cell. \\
+\end{longtable}
+}
+
+\textbf{Further rules for TabPFN-3.5.}
+
+\begin{itemize}
+\item
+  \textbf{Why the standard checkpoint, not Fast (timing).}
+  Both TabPFN-3.5 checkpoints were timed on the GPU on 4
+  scenarios x 2 replicates of the smoke stream, with the
+  run's prediction rows
+  (\texttt{results/tabpfn35\_fast\_timing.csv}):
+
+  {\def\LTcaptype{none} % do not increment counter
+  \begin{longtable}[]{@{}
+    >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+    >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+    >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+  \toprule\noalign{}
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Scenario (predicted rows)
+  \end{minipage} &
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Standard, s per fit
+  \end{minipage} &
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Fast, s per fit
+  \end{minipage} \\
+  \midrule\noalign{}
+  \endhead
+  \bottomrule\noalign{}
+  \endlastfoot
+  S1\_pi03\_n200 (4,334) & 23.7-30.6 & 5.2-5.6 \\
+  S2\_pi10\_n500 (2,000) & 14.5-14.6 & 3.2-3.3 \\
+  S3\_pi30\_n1000 (2,000) & 19.0 & 4.1-4.2 \\
+  S4\_pi03\_n3000 (4,334) & 57.4-57.7 & 11.9-12.0 \\
+  \end{longtable}
+  }
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Fast is 4.5-5.4 times faster. Peak GPU memory was
+    2.1-2.9 GB for the standard checkpoint and 1.0-2.2 GB
+    for Fast.
+  \item
+    With the standard checkpoint, schedule P4 (Section 9.3)
+    finishes in about 3 days.
+  \item
+    The plan's budget fallback ``use the Fast variant''
+    therefore does not apply.
+  \item
+    The main arm is the standard checkpoint: the default of
+    \texttt{ModelVersion.V3\_5}, and the model the vendor
+    ships as TabPFN-3.5.
+  \item
+    The Fast checkpoint
+    (\texttt{tabpfn-v3.5-fast-20260909.safetensors}; SHA-256
+    in Section 13) is recorded but not used.
+  \end{itemize}
+\item
+  \textbf{Device.} TabPFN-3.5 runs on the GPU for some
+  scenario groups and on CPU workers for others (Section
+  9.3). The device is recorded per replicate. On the same
+  replicate, CPU and GPU predictions differ by at most
+  2.6e-4 (mean 2.9e-5).
+\item
+  \textbf{The temperature arm's device.} \texttt{tabpfn\_t1}
+  runs on the GPU. For its 8 scenarios (pi = 10 \%), the
+  main \texttt{tabpfn} arm runs on a CPU worker. The two
+  arms therefore differ in temperature (a logit scale of
+  1/0.9) and, negligibly, in device.
+\end{itemize}
+
+\textbf{Further rules for Mitra-v2.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Precision.} Mitra-v2 keeps its \textbf{shipped
+  bfloat16 autocast}. The GTX 1660 Ti (Turing) has no
+  bfloat16 hardware, so the arithmetic is emulated. Two
+  support orders change single predictions by 6e-4 on
+  average and by at most 0.06. The effect on the true ICI is
+  about 1e-4, but E\_max and the tails of OCE are inflated;
+  this is reported.
+\item
+  \textbf{Sign flips.} Mitra's preprocessor flips feature
+  signs with the global numpy generator. The wrapper seeds
+  that generator from the replicate, so every fit is
+  reproducible.
+\item
+  \textbf{T2, n = 3000.} Mitra-v2 is \textbf{not run at
+  T2\_pi10\_n3000}, where it does not fit in 6 GB of GPU
+  memory. It is recorded there as ``not run: does not fit in
+  6 GB GPU memory''. Its context is never cut. A fit whose
+  context AutoGluon cut after an out-of-memory error, in any
+  scenario, is recorded as a failure.
+\item
+  \textbf{Pretraining limits.} The limits of 5,120 support
+  rows and 50 features are respected in every scenario.
+\end{itemize}
+
+\textbf{Excluded arms and reasons.}
+
+\begin{itemize}
+\tightlist
+\item
+  Jev: a closed hosted decision model with no fitting
+  interface and no published weights. It cannot be
+  version-pinned, and it would need patient rows sent to a
+  third party.
+\item
+  TabDPT: pretrained on real public tables, a contamination
+  risk for the real-data part.
+\item
+  LimiX-2: does not fit the 6 GB GPU.
+\item
+  Nori: regression only.
+\item
+  Zero-shot large language models: shown not to work for
+  this task in earlier work.
+\end{itemize}
+
+\subsubsection{5.3 External goodness-of-fit battery (R,
+CPU)}\label{external-goodness-of-fit-battery-r-cpu}
+
+\textbf{Software.} \texttt{ebrahim.gof} 2.10.0, built from
+commit \textbf{19480aa} of the 2.10.0 release branch (C21).
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{The build is checked, not only the version
+  number.} Before the freeze, every one of the 189 functions
+  of the installed namespace was compared with the R sources
+  of commit 19480aa: 0 differences
+  (\texttt{R/verify\_gof\_build.R}). The layer stores the
+  SHA-256 of that code and recomputes it from the installed
+  package at every start. Any other build is refused,
+  including a build of 2c77f3c, which carries the same
+  version number.
+\item
+  Every output row records ``2.10.0@19480aa''.
+\end{itemize}
+
+\textbf{What is run on each evaluation set.} For every arm,
+replicate and scenario (subject to the schedule of Section
+6.3):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{\texttt{run.all.external(y,\ p\_hat,\ G\ =\ 10,\ X)}
+  on the observed Y.} Its rows:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    EDGE (G = 10), the primary EDGE row, and EDGE (G =
+    auto);
+  \item
+    the Cox recalibration likelihood-ratio test;
+  \item
+    calibration-in-the-large;
+  \item
+    Spiegelhalter z;
+  \item
+    Osius-Rojek (external);
+  \item
+    GiViTI (external mode, via \texttt{callr});
+  \item
+    Hosmer-Lemeshow (external, chi-square with G df);
+  \item
+    Stukel (offset), the score test (below);
+  \item
+    le Cessie (external), run when the evaluation covariates
+    are stored (replicates 1-R);
+  \item
+    three descriptive rows.
+  \end{itemize}
+\item
+  \textbf{\texttt{edge.gof(...,\ external\ =\ TRUE)}.} It is
+  kept as a cross-check of the battery's EDGE rows.
+\item
+  \textbf{The same battery on an exact null outcome Y*
+  \textasciitilde{} Bernoulli(p-hat).} Y* is drawn from the
+  arm's own seed stream and stored with the predictions.
+  Under Y*, the arm's predictions are calibrated by
+  construction, so the rejection rate is the size of each
+  test \emph{on that arm's prediction distribution}.
+\item
+  \textbf{\texttt{deepgof1.external(y,\ p\_hat,\ X,\ B\ =\ 99)}
+  on the observed Y only}, for FLIC and the three TFMs.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The ``combined'' reading is used, except in designs with
+    more than 12 predictors (scenario T2, and the random
+    designs with p \textgreater{} 12; Section 3.9), where
+    only the \textbf{``axes'' reading} is used. All pairs of
+    30 covariates (435 pairs) take about 230 s per call; the
+    axes reading takes under 1 s.
+  \item
+    DeepGOF-1 is an exact Monte Carlo test. Its size was
+    checked in the auxiliary size study.
+  \end{itemize}
+\item
+  \textbf{\texttt{localize.external(y,\ p\_hat,\ X,\ M\ =\ 999)}}
+  (Section 5.4).
+\end{enumerate}
+
+\textbf{The size study (review D5).}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Main size study: the oracle arm.} In every
+  scenario, the oracle arm's real Y and its Y* are exact
+  nulls, at the main design's DGP. Over replicates 1-500
+  this gives 1,000 null evaluation sets per scenario, and
+  the full battery is run on all of them.
+\item
+  \textbf{Each arm's Y*} (replicates 1-R) gives the size on
+  that arm's own prediction distribution.
+\item
+  \textbf{Auxiliary.} The earlier study (2,000 replicates x
+  12 scenarios, its own coefficients) is reported as an
+  auxiliary check.
+\end{itemize}
+
+\textbf{Stukel (offset): the score form, ranked like every
+other test (C21).}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{The problem.} Up to commit 2c77f3c the row was the
+  likelihood-ratio test of Stukel's two terms added to the
+  frozen logit. The auxiliary study found it liberal: 0.063
+  pooled at N = 3,334, and 0.0745 at S1, pi = 10 \%. A
+  separate null simulation (4,000 replicates per cell)
+  traced the cause. The upper-tail term, 0.5 lp\^{}2 for lp
+  \textgreater= 0, is carried by only the 10-20 records with
+  p \textgreater= 0.5 when events are rare, and its
+  likelihood-ratio statistic is then not chi-square (size
+  0.078 at pi = 10 \% with normal risks).
+\item
+  \textbf{The change.} From commit 19480aa the row is the
+  \textbf{score test of the same two terms at the null}, U'
+  I\^{}- U with U = Z'(y - p) and I = Z' diag(p(1 - p)) Z.
+  Nothing is fitted. The columns are scaled to their
+  information and the inverse is rank-aware. When no
+  prediction reaches 0.5 the upper term is empty and the
+  test has 1 df; the row's Note says ``score test''.
+\item
+  \textbf{Its size.} In the null design and with the seeds
+  of the earlier Stukel study (4,000 nulls per cell;
+  predictions equal to the true risks; pi = 3, 10 and 30 \%
+  at N = 3,334, 1,000 and 1,000; normal and t3 risks), the
+  package's own row rejects at 0.035-0.053 at the 0.05 level
+  (MCSE 0.003-0.0035), with a p-value in all 24,000
+  replicates (\texttt{R/stukel\_score\_size.R},
+  \texttt{results/stukel\_score\_size.csv}). The author's
+  own check gave 0.037-0.055. The lowest value, 0.035 at pi
+  = 3 \% with normal risks, is conservative, not liberal:
+  there the upper term is empty in 37 \% of the replicates
+  (1 df). Under t3 risks some predictions reach 1 in double
+  precision; they are first moved to 1 - 1e-9, as the test
+  layer does.
+\item
+  \textbf{Consequence.} Stukel is treated like every other
+  test: it is in the size question (Q4a, Section 7.4) with
+  no exception, in the detection curves and the ranking of
+  tests, and in the summary tables. As for every test, its
+  size on the main design comes from the oracle nulls and
+  from each arm's Y*, and every table that shows a test's
+  power also shows its size.
+\end{itemize}
+
+\textbf{Validation-size subsamples.}
+
+\begin{itemize}
+\tightlist
+\item
+  The battery (no DeepGOF-1, no localization) is also run on
+  the nested e50 subsample at every event rate, and on the
+  e200 subsample at pi = 30 \% only (Section 3.7).
+\item
+  It is run on the observed Y and on Y*, for every arm
+  except the ladder columns.
+\item
+  This gives detection and size against validation size.
+\end{itemize}
+
+\subsubsection{5.4 Localization}\label{localization}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Call.}
+  \texttt{ebrahim.gof::localize.external(y,\ p\_hat,\ X,\ M\ =\ 999,\ seed\ =\ \textless{}per-replicate\ seed\textgreater{})},
+  with familywise error control at 0.05. It names zero or
+  more of the groups INTERCEPT, SLOPE, LINK and COV.
+\item
+  \textbf{Where it runs.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The oracle, FLIC, GAM, the TFMs and the temperature
+    arms, in every scenario where the covariates are stored
+    (replicates 1-R).
+  \item
+    The primary analysis is on S3 and T3.
+  \item
+    The oracle rows (real Y and Y*) give the familywise
+    error rate.
+  \end{itemize}
+\item
+  \textbf{T3's factor.} T3's 6-level factor enters as 5
+  dummy columns.
+\end{itemize}
+
+\subsubsection{5.5 Recalibration
+ladder}\label{recalibration-ladder}
+
+For FLIC and the three TFMs, with a local sample of m in
+\{100, 500\} rows taken from the recalibration set:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.8000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Level
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Method
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+R0 & none \\
+R1 & intercept only:
+\texttt{glm(y\ \textasciitilde{}\ 1,\ offset\ =\ logit(p\_hat))} \\
+R2 & logistic recalibration:
+\texttt{glm(y\ \textasciitilde{}\ logit(p\_hat))} \\
+R3 & isotonic regression (pool-adjacent-violators), with
+predictions clipped as in Section 4 \\
+\end{longtable}
+}
+
+After each level, the oracle estimands (Sections 4.1-4.2)
+and the battery on the observed Y (Section 5.3, item 1) are
+computed on the evaluation set. A level whose local sample
+has a single outcome class (m = 100 at pi = 3 \%) is
+recorded as failed.
+
+\textbf{Test-guided rule (evaluated, not assumed).}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  If the Cox recalibration test on the R0 predictions
+  rejects at 0.05 on the evaluation set, recalibrate with R2
+  fitted on the local sample (m = 500).
+\item
+  If EDGE (G = 10) still rejects at 0.05 on the evaluation
+  set with the R2 predictions, flag ``recalibration
+  insufficient''.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{6. Performance measures and Monte Carlo
+error}\label{performance-measures-and-monte-carlo-error}
+
+\subsubsection{6.1 Per scenario and
+arm}\label{per-scenario-and-arm}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Summaries.} The mean, median, inter-quartile
+  range, and 10th and 90th percentiles of each estimand
+  across replicates.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Medians and IQRs are the main summaries for a* and b*,
+    because single separated fits can produce extreme
+    values. In the pilot, ridge's mean b* was 19.7, driven
+    by one replicate.
+  \end{itemize}
+\item
+  \textbf{Monte Carlo standard errors.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    For every mean: SD / sqrt(R).
+  \item
+    For every proportion: sqrt(p(1 - p) / R).
+  \item
+    For medians: a distribution-free 95 \% confidence
+    interval from order statistics, and a bootstrap MCSE.
+  \end{itemize}
+\item
+  \textbf{Paired differences against FLIC} (each arm minus
+  FLIC on the same replicates), with the MCSE of the paired
+  difference.
+\item
+  \textbf{Classes.} The proportion of replicates in each
+  calibration class, with MCSE.
+\item
+  \textbf{Tests.} The rejection rate of every test under the
+  observed Y (detection) and under Y* (size), with MCSE.
+\item
+  \textbf{Fit counts.} Counts of failed, degenerate and
+  not-run fits, of \texttt{platt\_fallback}, and of
+  \texttt{lambda\_at\_edge} (Section 8).
+\end{itemize}
+
+\subsubsection{6.2 Detection curves}\label{detection-curves}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Model.} For each test, P(reject at 0.05) is
+  modelled against the true ICI with a logistic GAM
+  (\texttt{mgcv}, \texttt{s(true\ ICI,\ k\ =\ 10)}, REML).
+\item
+  \textbf{Data.} It is fitted across replicates, arms and
+  scenarios at N\_eval, with a separate curve for each test.
+\item
+  \textbf{Uncertainty.} A cluster bootstrap over replicates
+  (500 resamples).
+\item
+  \textbf{Every test of the battery} has its curve and its
+  rank, Stukel (offset) included (Section 5.3, C21).
+\end{itemize}
+
+\subsubsection{6.3 Replicates (schedule P4) and achieved
+MCSE}\label{replicates-schedule-p4-and-achieved-mcse}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1833}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1833}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3833}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Arms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Scenarios
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+R
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+MCSE achieved (pilot SDs)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+TabPFN-3.5, TabICLv2, Mitra-v2 & all 58 (Mitra-v2 not run at
+T2\_pi10\_n3000) & 200 at n \textless= 1000; \textbf{150 at
+n = 3000} & mean true ICI \textless= 0.0007 (0.0009 at n =
+3000), against a target of 0.002. Rejection rate at 0.05:
+0.0154 (0.0178 at n = 3000), against a target of 0.015. At
+0.5: 0.035 (0.041). \\
+Oracle, LR-MLE, FLIC, Ridge-CV, GAM, LightGBM (+ raw) & all
+58 & 500 & mean true ICI \textless= 0.0005 for FLIC and
+0.0011 for GAM at n = 200, pi = 3 \% (target 0.001) \\
+Real-TabPFN-2 legacy & 16 core scenarios at pi = 10 \% & 100
+& descriptive \\
+\texttt{tabpfn\_t1}, \texttt{tabicl\_t1} & S1-S4 at pi = 10
+\%, n in \{200, 3000\} & 100 & descriptive \\
+Oracle size study (oracle real Y + Y*) & all 58 & 500 x 2 =
+1,000 nulls & 0.0069 per scenario, 0.0009 pooled \\
+Random-design tier: oracle, the classical arms, TabPFN-3.5,
+TabICLv2, Mitra-v2 & D = 1,000 random designs (Section 3.9)
+& 1 per design & the precision of the meta-model (Section
+6.4): a simultaneous 95 \% band of about +/- 0.007 on the
+true-ICI difference against FLIC at a typical design
+(Section 6.4) \\
+\end{longtable}
+}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{The n = 3000 shortfall.} At n = 3000, R = 150
+  misses the rejection-rate target by about 15 \% (0.0178
+  against 0.015). This is the plan's first budget fallback,
+  adopted before the freeze.
+\item
+  \textbf{Common replicates.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Every paired comparison between a TFM and a classical
+    arm uses the replicates that both have (1-200, or 1-150
+    at n = 3000).
+  \item
+    The 500-replicate summaries of the classical arms are
+    reported separately.
+  \end{itemize}
+\item
+  \textbf{Battery schedule.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The battery runs on every arm for replicates 1-R.
+  \item
+    It runs on the oracle only (observed Y and Y*) for
+    replicates R+1 to 500.
+  \item
+    No pre-registered estimand needs the battery on the
+    classical arms beyond replicate R; their oracle
+    estimands come from all 500.
+  \end{itemize}
+\end{itemize}
+
+\textbf{Reporting rule.} No statement of ``no difference''
+or ``holds size'' is written without first giving the MCSE
+(or confidence interval) of the quantity. A scenario where
+the quantity is at a floor or a ceiling is reported as
+uninformative for that comparison.
+
+\subsubsection{6.4 Meta-model of the random-design
+tier}\label{meta-model-of-the-random-design-tier}
+
+The random designs (Section 3.9) are analysed with a
+pre-specified meta-model, in R \texttt{mgcv} (REML).
+
+\textbf{Responses.} For each design d and each TFM m
+(TabPFN-3.5, TabICLv2, Mitra-v2), paired with FLIC on the
+same data:
+
+\begin{itemize}
+\tightlist
+\item
+  D\_ICI(d, m) = true ICI(m) - true ICI(FLIC);
+\item
+  D\_logb(d, m) = \textbar log b*(m)\textbar{} -
+  \textbar log b*(FLIC)\textbar, where \textbar log
+  b*\textbar{} is capped at log 10 (b* \textless= 0 or no
+  finite b* counts as log 10). The meta-model uses the
+  values themselves, so it needs this finite cap; the
+  order-based summaries of Section 7.1 place such replicates
+  above every finite value instead.
+\end{itemize}
+
+\textbf{Model.} One GAM per response, fitted to all designs
+where both arms produced usable predictions (Section 8.2):
+
+\begin{verbatim}
+D ~ model + s(log n, by = model, k = 6) + s(log pi, by = model, k = 6)
+      + s(p, by = model, k = 5) + s(AUC target, by = model, k = 5)
+      + s(w_nl, by = model, k = 4) + s(w_int, by = model, k = 4)
+      + s(w_link, by = model, k = 4) + model:rho + model:discrete fraction
+      + s(design, bs = "re")
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{model} is the TFM factor; each TFM gets its own
+  partial effects.
+\item
+  The design random effect pairs the three TFMs that share a
+  design's data.
+\item
+  The family is the scaled t (\texttt{scat}), so that a few
+  separated FLIC fits cannot dominate.
+\end{itemize}
+
+\textbf{Outputs.}
+
+\begin{itemize}
+\tightlist
+\item
+  Partial-effect plots of every smooth, per TFM, with 95 \%
+  \textbf{simultaneous} bands. The bands come from 10,000
+  draws of the coefficients from their approximate
+  posterior, with the critical value of the maximum
+  standardized deviation over the plotted grid.
+\item
+  \textbf{Regions.} For each TFM, every random design's own
+  setting is classified as ``TFM better'' (the simultaneous
+  band of the predicted D\_ICI lies below -0.01), ``TFM
+  worse'' (above +0.01) or ``within 0.01''. The shares are
+  reported, with maps on (log n, log pi) at the median of
+  the other factors, and on the two factors with the largest
+  partial effects.
+\item
+  The same maps for D\_logb, with a margin of log 1.1.
+\item
+  \textbf{Detection.} For every test and every arm, the
+  rejection at 0.05 on the observed Y (0/1) is modelled with
+  the same terms and a logit link (binomial family, no
+  design random effect, one model per arm and test). The
+  size on the oracle and on each arm's Y* is modelled the
+  same way, and every region where the simultaneous band of
+  the predicted size excludes {[}0.04, 0.06{]} is reported.
+\item
+  \textbf{Mitra-v2} is modelled only where it ran (Section
+  3.9); the region where it did not fit is shown on every
+  map.
+\end{itemize}
+
+\textbf{Precision.} One replicate per design is enough
+because the meta-model pools neighbouring designs. Take a
+residual SD of 0.012 for D\_ICI (the pilot's largest SD of a
+paired true-ICI difference) and about 40 effective degrees
+of freedom per TFM. With D = 1,000, the pointwise SE of the
+predicted difference at a typical design is then about 0.012
+x sqrt(40 / 1,000) = 0.0024, and the simultaneous band is
+about three times wider (+/- 0.007). A difference larger
+than about 0.017 is therefore classified as ``better'' or
+``worse'' at the 0.01 margin. At the edges of the design
+space the bands are wider, and the maps show them.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{7. Research questions and reporting
+rules}\label{research-questions-and-reporting-rules}
+
+This is an estimation-focused protocol. It states no
+confirmatory hypothesis and predicts the direction of no
+result. Each research question below fixes, before any
+main-run result is seen, the estimands, the comparison, the
+summary with its Monte Carlo standard error (MCSE), and the
+reporting rule that decides when a model is called better,
+worse or equivalent. The results then determine the
+conclusions, and the rules cannot change after the data are
+seen.
+
+\subsubsection{7.0 Rules common to every
+question}\label{rules-common-to-every-question}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{``TFM''.} The word means each of the three TFM
+  arms judged separately: TabPFN-3.5 (\texttt{tabpfn}),
+  Mitra-v2 and TabICLv2 at their shipped settings. The
+  legacy and temperature arms are not part of the main
+  comparison set; they are reported beside it.
+\item
+  \textbf{Comparator.} Every comparison is paired against
+  FLIC: the TFM minus FLIC on the same replicates. It uses
+  the replicates where both arms produced usable predictions
+  (Section 8.2).
+\item
+  \textbf{Summaries.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    For a difference in true ICI: the mean paired
+    difference, with MCSE = SD / sqrt(R) and the 95 \%
+    interval mean +/- 1.96 MCSE.
+  \item
+    For differences in \textbar log b*\textbar{} and
+    \textbar a*\textbar, which single separated fits can
+    make extreme: the Hodges-Lehmann (HL) estimate of the
+    paired differences, with its distribution-free 95 \%
+    interval (from the signed-rank statistic) and a
+    bootstrap MCSE.
+  \end{itemize}
+\item
+  \textbf{Classification.} For a paired difference where a
+  negative value favours the TFM, and a margin delta:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{better} than FLIC: the whole 95 \% interval lies
+    below -delta;
+  \item
+    \textbf{worse} than FLIC: the whole interval lies above
+    +delta;
+  \item
+    \textbf{equivalent} to FLIC: the whole interval lies
+    inside (-delta, +delta);
+  \item
+    \textbf{inconclusive}: otherwise.
+  \end{itemize}
+\item
+  \textbf{Margins}, fixed now:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    true ICI: delta = 0.01, the margin of Section 6.4; at pi
+    = 3 \% it is multiplied by 0.3 (delta = 0.003), by the
+    rule for probability-scale thresholds of Section 4.5;
+  \item
+    \textbar log b*\textbar: delta = log 1.1, the slope
+    margin of Section 6.4;
+  \item
+    \textbar a*\textbar: delta = 0.05, half the
+    weak-calibration tolerance on a* (Section 4.5).
+  \end{itemize}
+\item
+  \textbf{MCSE requirement.} The reporting rule of Section
+  6.3 applies to every question: no ``equivalent'', ``no
+  difference'' or ``holds its size'' is written without the
+  interval or MCSE of the quantity, and a cell at a floor or
+  a ceiling is reported as uninformative for that
+  comparison.
+\item
+  \textbf{No p-value decides a label.} The intervals are 95
+  \% intervals, not adjusted for multiplicity. Each question
+  reports how many cells fall in each class, so that the
+  reader can weigh the number of cells.
+\item
+  \textbf{Reporting.} Every label is reported in a
+  summary-of-findings table with one row per question,
+  whatever it is.
+\end{itemize}
+
+\subsubsection{7.1 Q1. How far from 1, and in which
+direction, is each TFM's calibration slope at small
+n?}\label{q1.-how-far-from-1-and-in-which-direction-is-each-tfms-calibration-slope-at-small-n}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Estimands.} The true slope b* of each TFM and of
+  FLIC (Section 4.1), and the paired difference d =
+  \textbar log b*(TFM)\textbar{} - \textbar log
+  b*(FLIC)\textbar. A replicate with b* \textless= 0 or no
+  finite b* gets \textbar log b*\textbar{} = 10, which
+  places it above every finite value.
+\item
+  \textbf{Main cells.} pi = 10 \% and n in \{200, 500\}, in
+  the four shapes: 8 cells per TFM. The same summaries are
+  reported in all 48 core scenarios.
+\item
+  \textbf{Summaries.} The HL estimate of d with its 95 \%
+  interval and bootstrap MCSE; the median b* of each arm
+  with its distribution-free 95 \% interval (Section 6.1).
+\item
+  \textbf{Reporting rules.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{Closeness to 1.} In each cell, the TFM is better
+    than, worse than or equivalent to FLIC, or inconclusive,
+    by Section 7.0 with delta = log 1.1.
+  \item
+    \emph{Direction.} In each cell, an arm is called
+    \textbf{under-confident} when the 95 \% interval of its
+    median b* lies above 1.1, \textbf{over-confident} when
+    it lies below 0.9, \textbf{close to 1} when it lies
+    inside {[}0.9, 1.1{]} (the slope tolerance of weak
+    calibration, Section 4.5), and \textbf{unclear}
+    otherwise. FLIC is labelled in the same way.
+  \item
+    For each TFM, the number of the 8 main cells in each
+    class is reported.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{7.2 Q2. At what development size does each
+TFM reach calibration, compared with
+FLIC?}\label{q2.-at-what-development-size-does-each-tfm-reach-calibration-compared-with-flic}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Estimands.} The minimum n for calibration (Section
+  4.5) of each arm, in each shape, at each event rate and
+  for each class; and the proportion of replicates that meet
+  each class at each n, with MCSE.
+\item
+  \textbf{Comparison.} For each TFM, shape and event rate:
+  the TFM's minimum n for weak calibration against FLIC's,
+  both from the common replicates. ``\textgreater{} 3000''
+  ranks above 3000.
+\item
+  \textbf{Reporting rules.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The TFM \textbf{needs a smaller n} than FLIC,
+    \textbf{the same n} or \textbf{a larger n}, by comparing
+    the two minimum n.
+  \item
+    The comparison is repeated with the 80 \% criterion
+    replaced by its lower 95 \% limit (proportion - 1.96
+    MCSE \textgreater= 0.80). An ordering is called
+    \textbf{clear} only when both versions give it;
+    otherwise it is called \textbf{sensitive to Monte Carlo
+    error}.
+  \item
+    The comparison is also repeated at half and at double
+    every threshold, and reported beside the main one.
+  \item
+    Results are reported for all four shapes and all three
+    event rates; no shape is singled out in advance.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{7.3 Q3. How large is each TFM's
+calibration-in-the-large error when events are
+rare?}\label{q3.-how-large-is-each-tfms-calibration-in-the-large-error-when-events-are-rare}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Estimands.} The true intercept a* (Section 4.1),
+  the paired difference d = \textbar a*\textbar(TFM) -
+  \textbar a*\textbar(FLIC), and mean p-hat minus mean p*
+  (Section 4.2).
+\item
+  \textbf{Cells.} pi = 3 \%, the four shapes and all four n:
+  16 cells per TFM. The cells at n \textgreater= 1000 are
+  shown first, because the pilot suggested that the shipped
+  softmax temperature matters most there (Section 0.2, C2).
+  The cells at n \textless= 500 are reported with the same
+  rule. The same summaries are also reported at pi = 10 \%
+  and 30 \%.
+\item
+  \textbf{Summaries.} The HL estimate of d with its 95 \%
+  interval and bootstrap MCSE; the median a* of each arm
+  with its 95 \% interval.
+\item
+  \textbf{Reporting rule.} Better, worse, equivalent or
+  inconclusive by Section 7.0, with delta = 0.05. Each TFM's
+  shipped softmax temperature is shown beside its result.
+\item
+  \textbf{Temperature arms.} At pi = 10 \%, the paired
+  effect of the temperature (\texttt{tabpfn\_t1} minus
+  \texttt{tabpfn}, and \texttt{tabicl\_t1} minus
+  \texttt{tabicl}) on a*, b*, mean risk and true ICI is
+  reported with the same summaries and margins, as a direct
+  estimate of the mechanism.
+\end{itemize}
+
+\subsubsection{7.4 Q4. How do the goodness-of-fit tests
+behave on TFM
+predictions?}\label{q4.-how-do-the-goodness-of-fit-tests-behave-on-tfm-predictions}
+
+\emph{Q4a. Size.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Estimand.} The rejection rate at 0.05 of every
+  battery test under the exact null Y* \textasciitilde{}
+  Bernoulli(p-hat), for every arm, with MCSE. For the
+  oracle, its real Y and Y* over replicates 1-500 are used
+  (Section 5.3). Stukel (offset), now the score test, is
+  included with no exception (C21).
+\item
+  \textbf{Reporting rule}, for each (test, arm):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{holds its size}: the pooled size over all
+    scenarios where the arm was run lies in {[}0.04,
+    0.06{]}, and the per-scenario size lies inside its 99 \%
+    Monte Carlo band (0.05 +/- 2.576 MCSE) in at least 95 \%
+    of scenarios (about 1 \% of scenarios are expected
+    outside the band by chance);
+  \item
+    \textbf{liberal}: the pooled size is above 0.06;
+  \item
+    \textbf{conservative}: the pooled size is below 0.04;
+  \item
+    \textbf{uneven}: the pooled size lies in {[}0.04,
+    0.06{]}, but fewer than 95 \% of scenarios are inside
+    their band.
+  \end{itemize}
+\item
+  Every (test, arm, scenario) outside its band is listed.
+\end{itemize}
+
+\emph{Q4b. Detection.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Estimands.} For every test, the detection curve
+  P(reject at 0.05 \textbar{} true ICI) of Section 6.2, and
+  the rank of the tests.
+\item
+  \textbf{Main comparison.} EDGE (G = 10) against
+  Hosmer-Lemeshow (external): the difference P(reject
+  \textbar{} EDGE) - P(reject \textbar{} HL) at true ICI in
+  \{0.01, 0.02, 0.03, 0.05\}, from curves fitted on the same
+  replicates, with cluster-bootstrap 95 \% intervals.
+\item
+  \textbf{Reporting rule}, at each of the four points, with
+  a margin of 2 percentage points: EDGE \textbf{detects more
+  often} when the interval lies above +0.02, \textbf{less
+  often} when it lies below -0.02, \textbf{equivalently}
+  when it lies inside (-0.02, +0.02), and the comparison is
+  \textbf{inconclusive} otherwise.
+\item
+  Every table and figure that shows a test's detection also
+  shows its size (Section 5.3).
+\end{itemize}
+
+\subsubsection{7.5 Q5. How well does recalibration repair
+each TFM, and does the test-guided rule pick the right
+cases?}\label{q5.-how-well-does-recalibration-repair-each-tfm-and-does-the-test-guided-rule-pick-the-right-cases}
+
+\emph{Q5a. Repair.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Estimands.} The mean true ICI of each arm after
+  each level of the ladder (Section 5.5), with MCSE.
+\item
+  \textbf{Comparisons.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{Against FLIC.} The TFM after R2 (m = 500) minus
+    FLIC after R2 (m = 500), paired, labelled by Section 7.0
+    with the true-ICI margin.
+  \item
+    \emph{Against the best arm.} In each core scenario, the
+    best arm is the one with the smallest mean true ICI
+    among FLIC and the three TFMs after R2 (m = 500), and
+    LR-MLE, Ridge, GAM and LightGBM (Platt) as fitted. The
+    statistic is the TFM's mean true ICI after R2 minus the
+    best arm's mean true ICI, with the paired MCSE.
+  \end{itemize}
+\item
+  \textbf{Reporting rule against the best arm.} In a
+  scenario, the TFM is \textbf{within 0.005 of the best arm}
+  when the upper 95 \% limit of the difference is \textless=
+  0.005, \textbf{more than 0.005 above it} when the lower
+  limit is \textgreater{} 0.005, and \textbf{unclear}
+  otherwise. For each TFM, the counts over the 48 core
+  scenarios are reported.
+\end{itemize}
+
+\emph{Q5b. The test-guided rule.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Truth.} A replicate is ``truly insufficient'' if
+  its true ICI after R2 (m = 500) is \textgreater{} 0.015,
+  or \textgreater{} 0.0045 at pi = 3 \% (Section 4.5).
+\item
+  \textbf{Estimands.} PPV = P(truly insufficient \textbar{}
+  flagged) and NPV = P(not truly insufficient \textbar{} Cox
+  rejected and not flagged), pooled over the core scenarios,
+  for each TFM and for FLIC, with cluster-bootstrap 95 \%
+  intervals.
+\item
+  \textbf{Reporting rule.} The PPV is called \textbf{at
+  least 0.8} when its lower 95 \% limit is \textgreater=
+  0.8, \textbf{below 0.8} when its upper limit is
+  \textless{} 0.8, and \textbf{unclear} otherwise. If fewer
+  than 50 replicates are flagged for an arm, its PPV is
+  reported as ``not assessable'' (its MCSE would exceed
+  0.057). The NPV is reported with its interval and no
+  label.
+\end{itemize}
+
+\subsubsection{7.6 Q6. Do the grid findings carry over to
+randomly drawn designs? (robustness
+check)}\label{q6.-do-the-grid-findings-carry-over-to-randomly-drawn-designs-robustness-check}
+
+Q6 is answered by a pre-specified robustness check. It
+checks whether the core design's results on the true ICI
+transfer to the random-design tier (Section 3.9). It is a
+check of transfer, not a hypothesis.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Transfer check.} For each TFM and each of the 48
+  core scenarios, the meta-model of Section 6.4 predicts
+  D\_ICI at the scenario's own coordinates: its n and pi, p
+  = 8, AUC target = its oracle AUC, rho = 0.018 (the mean
+  pairwise correlation of the core covariates: one pair at
+  0.5 among 28), discrete fraction 0.25, and the severities
+  of its shape (S1: all 0; S2: w\_nl = 0.5; S3: w\_int = 1;
+  S4: w\_link = 1).
+\item
+  A scenario \textbf{agrees} when the core design's mean
+  paired difference (TFM - FLIC, replicates 1-R) and the
+  prediction differ by less than 1.96 sqrt(SE\_meta\^{}2 +
+  MCSE\_core\^{}2).
+\item
+  \textbf{Reporting rule}, per TFM:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{the grid transfers}: at least 40 of the 48 core
+    scenarios agree (83 \%);
+  \item
+    \textbf{the grid transfers in part}: 30 to 39 of the 48
+    agree;
+  \item
+    \textbf{the grid does not transfer}: fewer than 30
+    agree.
+  \end{itemize}
+\item
+  Mitra-v2 is checked only on the core scenarios inside the
+  region where it ran in the random tier.
+\item
+  \textbf{Reported with the check, whatever it shows:} the
+  robustness map, that is, the regions of Section 6.4 where
+  each TFM is better or worse than FLIC by more than 0.01;
+  and every core scenario that does not agree.
+\item
+  \textbf{Interpretation, fixed in advance.} If the grid
+  does not transfer for a TFM, the core design's fixed
+  levels are not typical of the wider design space for that
+  TFM. The paper then reports the random-tier maps as the
+  general result for that TFM, and the core design as a set
+  of special cases.
+\end{itemize}
+
+\subsubsection{7.7 Equal prominence for every
+outcome}\label{equal-prominence-for-every-outcome}
+
+\begin{itemize}
+\tightlist
+\item
+  If every TFM is at least weakly calibrated in at least 80
+  \% of replicates at n = 200, in every shape and at every
+  event rate, the paper reports that TFMs remove the
+  small-sample calibration problem, with the same prominence
+  as the opposite result.
+\item
+  Whatever direction Q1 finds (under-confident,
+  over-confident or close to 1) is reported as the finding,
+  with the same prominence.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{8. Exclusions, failures and
+stopping}\label{exclusions-failures-and-stopping}
+
+\subsubsection{8.1 Stopping}\label{stopping}
+
+\begin{itemize}
+\tightlist
+\item
+  The replicate counts of Section 6.3 are fixed. They are
+  not changed after any result of the main run is seen.
+\item
+  No replicate is redrawn for any reason, including a
+  development set with no events.
+\end{itemize}
+
+\subsubsection{8.2 Failures, degenerate fits and
+pairing}\label{failures-degenerate-fits-and-pairing}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Failure.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    An arm counts as failed when it raises an error or
+    returns a missing, non-finite or out-of-range
+    prediction.
+  \item
+    A single-class development set is recorded as the same
+    failure for every arm except the oracle.
+  \item
+    Failures are logged with the error message and kept.
+  \item
+    The R arms have a limit of 1,800 s per call. The Python
+    arms have no time limit (the pilot's longest fit was 134
+    s). A crashed or killed process is restarted, and the
+    restart refits only the missing arms (resume).
+  \end{itemize}
+\item
+  \textbf{Not run.} Mitra-v2 at T2\_pi10\_n3000 (Section
+  5.2), and in the random designs above its memory limit
+  (Section 3.9). It is shown in every table as ``not run''.
+\item
+  \textbf{Degenerate fit.} A fit that ran is labelled
+  \textbf{``degenerate''} (not ``ok'') in either of two
+  cases:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    more than 100 of its evaluation predictions lie within
+    1e-6 of 0 or 1;
+  \item
+    LR-MLE shows separation (non-convergence, fitted
+    probabilities numerically 0 or 1, or
+    \textbar coefficient\textbar{} \textgreater{} 15).
+  \end{itemize}
+
+  Degenerate fits are the arm's real output. They are
+  scored, tested and kept in every comparison, and counted
+  in every table. LR-MLE summaries are also reported without
+  them.
+\item
+  \textbf{Other flags,} counted per arm and scenario:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{platt\_fallback} (LightGBM);
+  \item
+    \texttt{lambda\_at\_edge} (ridge);
+  \item
+    \texttt{small\_n\_flag} (TabICLv2 at n \textless{} 300);
+  \item
+    the number of predictions at the boundary.
+  \end{itemize}
+\item
+  \textbf{Pairing rule} (review D8).
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Every comparison between arms uses only the replicates
+    where both arms produced usable (ok or degenerate)
+    predictions.
+  \item
+    The known few-event failures are part of the result, not
+    hidden:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      ridge fails when the development set has 2 or fewer
+      events (glmnet needs 2 events in every CV fold), about
+      6 \% of replicates at n = 200, pi = 3 \%;
+    \item
+      LightGBM fails at 1 or fewer events;
+    \item
+      LR, FLIC, GAM and the TFMs run with 1 event;
+    \item
+      the ladder's R1-R3 at m = 100 fail when the 100-row
+      local sample has no event;
+    \item
+      EDGE is ``not run'' on isotonic (R3, m = 100)
+      predictions with too few distinct values; such rows
+      count neither as rejections nor as non-rejections, and
+      the test-guided rule uses R2 only.
+    \end{itemize}
+  \item
+    \textbf{The 5 \% flag.} If an arm fails in more than 5
+    \% of the replicates of a scenario, that scenario is
+    flagged in all tables, and its results for that arm are
+    reported but not used in the labels of Section 7.
+    Because failures are not redrawn, this flag is part of
+    the result.
+  \item
+    \textbf{Random designs.} Each design has one replicate,
+    so the 5 \% flag does not apply. A failed or not-run arm
+    leaves that design out of that arm's meta-model, and the
+    failures are mapped over the design space like any other
+    outcome.
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{9. Pilot, smoke test and compute
+plan}\label{pilot-smoke-test-and-compute-plan}
+
+\subsubsection{9.1 Phase-1 pilot (before the freeze; smoke
+seed
+stream)}\label{phase-1-pilot-before-the-freeze-smoke-seed-stream}
+
+See Section 0. The pilot report records:
+
+\begin{itemize}
+\tightlist
+\item
+  times;
+\item
+  GPU memory;
+\item
+  the failure rates;
+\item
+  the calibration summaries;
+\item
+  the test-layer cost;
+\item
+  the reproducibility checks: predictions are bit-identical
+  across processes and under CPU load, and TabICL differs by
+  at most 8e-7.
+\end{itemize}
+
+\subsubsection{9.2 Final smoke test (2026-10-07, before the
+freeze)}\label{final-smoke-test-2026-10-07-before-the-freeze}
+
+\textbf{What was run.} Every arm on S1\_pi03\_n200 and
+T2\_pi10\_n500, 2 replicates each, on the smoke stream. The
+files were laid out exactly as in the main run: classical
+arms, the GPU process, and TabPFN-3.5 on a CPU worker for
+T2. Then the scoring and the test layer: the oracle-only
+mode first, then every arm.
+
+\textbf{Results.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Fits.} All 52 arm fits ran: 49 ``ok'' and 3
+  ``degenerate'' (LR-MLE and GAM at S1, GAM at T2), with 0
+  failures.
+\item
+  \textbf{Temperatures and checkpoints.} The recorded
+  temperatures were 1.0 (\texttt{tabpfn}), 0.9
+  (\texttt{tabpfn\_t1}, \texttt{tabicl},
+  \texttt{tabpfn\_legacy}) and 1.0 (\texttt{tabicl\_t1}).
+  Both TabPFN-3.5 arms carried the pinned SHA-256.
+\item
+  \textbf{Test layer.} It wrote gzip files with 0 errors.
+  Every arm had both real-Y and Y* rows, including an
+  ``Osius-Rojek (external)'' row with a finite p-value (104
+  of 104 arm x outcome pairs). DeepGOF-1 used the axes
+  reading in T2 (0.2-0.3 s per call).
+\item
+  \textbf{Pass criteria.} The pass criteria were met: no
+  unlogged error, finite predictions, fingerprints asserted,
+  and files written and resumable.
+\item
+  \textbf{Unit tests.} 41 Python tests (in both
+  environments), 11 R tests and the kill-and-resume check
+  passed.
+\end{itemize}
+
+\textbf{Second smoke run (2026-10-07, after C21-C23).} The
+package pin moved to commit 19480aa and the random-design
+tier was added, so the smoke was repeated on the smoke
+stream (\texttt{code/smoke\_freeze\_b.sh},
+\texttt{results/smoke\_freeze\_b/SUMMARY.md}):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{What was run.} Every arm on S1\_pi03\_n200 and
+  T2\_pi10\_n500 (2 replicates each), and the tier's arms on
+  the random designs R0001-R0005 (one replicate each), laid
+  out as in the main run. TabPFN-3.5 ran on the GPU for four
+  designs and on a CPU worker for R0002 ((n + N\_eval) x p =
+  128,910). Then the scoring and the test layer: the
+  oracle-only mode first, then every arm.
+\item
+  \textbf{Fits.} Of the 102 fits, 94 were ``ok'', 7
+  ``degenerate'' (LR-MLE and GAM in S1 and in two random
+  designs, GAM in T2) and 1 ``not run'': Mitra-v2 in R0002
+  (n\^{}2 x p = 9.8e7), recorded as ``does not fit in 6 GB
+  GPU memory''. There were 0 failures.
+\item
+  \textbf{Test layer.} 9 gzip files with 0 open errors,
+  every one with the reference 2.10.0@19480aa. Every arm had
+  real-Y and Y* rows. All 202 Stukel (offset) rows say
+  ``score test'' and have a finite p-value (df 2, or 1 where
+  no prediction reached 0.5), and all 202 arm x outcome
+  pairs have an ``Osius-Rojek (external)'' row with a finite
+  p-value. DeepGOF-1 used the axes reading in T2 and in the
+  three random designs with p \textgreater{} 12, and the
+  combined reading in R0001 (p = 12) and R0005 (p = 8). The
+  52 rows marked ``not run'' or ``failed'' all belong to the
+  degenerate GAM fits and to the isotonic ladder column
+  \texttt{flic\_\_R3\_m100}, as Section 8.2 foresees.
+\item
+  \textbf{Unit tests.} 48 Python tests (in both
+  environments), 16 R tests, the kill-and-resume check,
+  \texttt{dgp.py\ check} (the core table is unchanged,
+  difference 0), the core-fingerprint test of the family-R
+  code and the build check of commit 19480aa passed.
+\end{itemize}
+
+\subsubsection{9.3 Schedule P4: streams, devices and
+budget}\label{schedule-p4-streams-devices-and-budget}
+
+\textbf{Streams.} Four streams run in parallel on a 12-core
+/ 24-thread machine with one GTX 1660 Ti 6 GB. About 5 cores
+stay free. A fifth stream, the random-design tier, takes
+over their slots as they finish.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.6000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Stream
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cores
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Work, in order
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+GPU process (\texttt{-\/-device\ cuda}, 6 threads) & GPU + 1
+& TabICLv2 and Mitra-v2 on all scenarios; then TabPFN-3.5 on
+the 16 core scenarios at pi = 3 \% and on T2\_pi10\_n500;
+then legacy V2; then the two temperature arms \\
+CPU worker A (TabPFN-3.5, \texttt{-\/-device\ cpu}, 6
+threads) & 6 & T2\_pi10\_n3000 first, then the 16 core
+scenarios at pi = 30 \%, then T1 and T3 (4 scenarios) \\
+CPU worker B (TabPFN-3.5, \texttt{-\/-device\ cpu}, 6
+threads) & 6 & the 16 core scenarios at pi = 10 \%, then T4a
+and T4b (4 scenarios) \\
+Classical and tests (6 workers) & 6 & the classical arms (R
+= 500) first; then the test layer and the scoring, streaming
+every pass until the model streams finish; then the
+validation-size subsamples \\
+Random-design tier (Section 3.9) & the slots it takes over &
+when CPU worker B is done: the classical arms of the random
+designs (6 workers), then TabPFN-3.5 on half of the CPU
+designs; when worker A is done: the other half; when the GPU
+process is done: TabICLv2 and Mitra-v2 on every design and
+TabPFN-3.5 on the GPU designs; when the classical stream is
+done: the test layer and the scoring \\
+\end{longtable}
+}
+
+\textbf{Device rules.}
+
+\begin{itemize}
+\tightlist
+\item
+  Each scenario's TabPFN-3.5 fits run on one device only.
+  The three groups above cover the 58 scenarios exactly once
+  (\texttt{code/main\_groups.py} asserts it).
+\item
+  After about 24 hours the balance is checked:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    a CPU worker that is clearly behind hands its
+    \emph{unstarted} scenarios, whole, to the GPU process
+    (it is stopped first, so no replicate is fitted twice);
+  \item
+    a worker that is ahead takes unstarted scenarios from
+    the other.
+  \end{itemize}
+\item
+  The device actually used for every scenario is reported in
+  the paper. The scenarios fitted on the CPU are listed in
+  \texttt{DEVIATIONS.md} only if they differ from this plan.
+\item
+  The random designs' TabPFN-3.5 device follows the size
+  rule of Section 3.9. Those designs are not moved in the
+  balance check.
+\end{itemize}
+
+\textbf{Budget} (pilot measurements, about 118 GPU-hours
+plus about 490 core-hours before balancing):
+
+\begin{itemize}
+\tightlist
+\item
+  about 79 hours for the GPU stream, including about 8
+  GPU-hours for the two temperature arms;
+\item
+  63-77 hours for CPU worker A and 57-71 hours for CPU
+  worker B (CPU/GPU time ratio 2.4-3.0);
+\item
+  the classical arms take about 9 hours of the fourth
+  stream;
+\item
+  the 58 scenarios end after about 3.3-3.4 days (about 82
+  hours, with the last pass of the test layer).
+\end{itemize}
+
+The DeepGOF-1 axes reading in T2 removes about 70 core-hours
+from the pilot's estimate of the test layer (at B = 99).
+
+\textbf{The random-design tier} (D = 1,000). The costs are
+measured per fit (\texttt{code/random\_budget.py}, whose
+output is \texttt{results/random\_budget.md}). Times such as
+``79 h'' are hours from the start of the run.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{GPU:} about 6.8 hours, from about 79 h: TabICLv2
+  and Mitra-v2 on every design where they run, and
+  TabPFN-3.5 on the 821 GPU designs.
+\item
+  \textbf{TabPFN-3.5 on the 179 CPU designs:} about 5.3
+  hours on one 6-thread worker, so about 2.7 hours on each
+  of the two workers; done by about 73 h.
+\item
+  \textbf{The classical arms:} about 4.8 core-hours (about
+  50 minutes on 6 workers), from about 64 h.
+\item
+  \textbf{The test layer and the scoring:} about 13
+  core-hours (about 46 core-seconds per design at B = 99).
+\item
+  \textbf{The basis:} per-fit time models fitted to the
+  pilot's and the memory probe's GPU timings (log-scale RMSE
+  0.14-0.34), a CPU/GPU time ratio of 3.0 for TabPFN-3.5 on
+  6 threads, and the 50-design cost sample for the classical
+  arms and the test layer, measured on a loaded machine.
+\item
+  \textbf{Choice of D.} The tier was to add at most about
+  one day, with D \textgreater= 600 and a target of 1,000.
+  With D = 1,000 it adds about 4.3 hours (about 11 hours if
+  every cost were twice the measured one), so D = 1,000.
+\item
+  \textbf{New total.} The expected wall time of the whole
+  run is about \textbf{3.6 days} (about 86 hours).
+\end{itemize}
+
+\textbf{Budget fallbacks of the plan.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  R = 150 at n = 3000: \textbf{adopted}.
+\item
+  the faster variant of TabPFN-3.5: \textbf{not needed}
+  (Section 5.2).
+\item
+  drop the legacy arm: \textbf{not adopted}; the legacy arm
+  is kept at R = 100.
+\end{enumerate}
+
+\subsubsection{9.4 Engineering}\label{engineering}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Writing replicates.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Every replicate is written to disk as soon as it is
+    done. The file holds the fingerprints, p*, Y, Y* and the
+    p-hat of every arm as float32, and it is written
+    atomically.
+  \item
+    A lock file per replicate makes the streams safe to run
+    together.
+  \item
+    A killed stream resumes with the same command.
+  \end{itemize}
+\item
+  \textbf{File hand-off.} The statistical arms and the test
+  layer run in R on the saved files; the TFMs run in Python;
+  the hand-off is by file only. The test layer writes one
+  gzip-compressed csv per replicate and reads csv or csv.gz.
+\item
+  \textbf{The start command checks:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    the software versions of Section 13;
+  \item
+    the SHA-256 of every checkpoint (it writes
+    \texttt{results/environment.json});
+  \item
+    that the installed \texttt{ebrahim.gof} is the build of
+    commit 19480aa (\texttt{R/verify\_gof\_build.R});
+  \item
+    that the random designs re-solve to the stored table
+    (\texttt{code/dgp\_random.py\ check});
+  \item
+    the test-layer unit tests.
+  \end{itemize}
+\item
+  \textbf{The deposit guard.} The run refuses to start until
+  the registration link and timestamp are recorded in
+  \texttt{prereg/DEPOSITED.txt}.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{10. Real-data analysis
+plan}\label{real-data-analysis-plan}
+
+\subsubsection{10.1 Data sets, outcomes and
+splits}\label{data-sets-outcomes-and-splits}
+
+Event rates are computed from the files and reported; they
+are not taken from the literature. The predictor lists below
+are fixed from the codebooks before any outcome is
+tabulated, and they are limited to variables available at
+the time of prediction.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2295}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1803}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3279}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2623}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Data set (access, licence)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Outcome(s)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Predictors
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Development / external split
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{International Stroke Trial}, IST (Edinburgh
+DataShare, doi:10.7488/ds/104; ODC-By, plus the DataShare
+end-user licence accepted by the author). The file has been
+downloaded and has not been tabulated. &
+\texttt{ist\_death14}: death within 14 days (patients with
+known 14-day status); \texttt{ist\_dd6}: dead or dependent
+at 6 months (unknown status excluded) & the 21 baseline
+variables recorded at randomisation: age; sex; delay from
+onset (h); systolic blood pressure; conscious state (alert,
+drowsy, unconscious); symptoms on waking; atrial
+fibrillation; aspirin within 3 days; heparin within 24 h; CT
+status (not done, done without visible infarct, visible
+infarct); stroke subtype (TACS, PACS, LACS, POCS, other);
+the eight deficit items; and a flag for ``a deficit could
+not be assessed'' & primary: UK (development) against all
+other countries (external). Sensitivity: randomised before
+1994 against 1994-1996. If the UK pool has fewer than 3,500
+complete cases: UK, Ireland and the Northern European
+countries (Norway, Sweden, Denmark, Finland, the
+Netherlands). \\
+\textbf{CRASH-2} (LSHTM Data Compass / freeBIRD,
+doi:10.17037/DATA.10; CC BY as stated by freeBIRD). The
+download waits for the author's freeBIRD registration. &
+\texttt{crash2\_death28}: death in hospital within 28 days
+of randomisation & following Perel et al.~(2012): Glasgow
+coma score, age, systolic blood pressure, heart rate,
+respiratory rate, hours since injury (continuous), injury
+type (blunt only or any penetrating), and sex. The data
+dictionary's missing-value codes are set to missing. &
+temporal: randomised before 1 January 2008 against
+2008-2010. The public file has no country. If the early pool
+has fewer than 3,500 complete cases, the cut moves to the
+date that splits the complete-case table in half. \\
+\textbf{Sepsis survival, minimal clinical records} (UCI
+repository id 827, doi:10.24432/C53C8N; CC BY 4.0) &
+\texttt{sepsis\_death}: death during the admission & age,
+sex, and septic episode number & primary: the 91,153
+admissions not meeting Sepsis-3 (development) against the
+19,051 Sepsis-3 admissions (external). Sensitivity: a random
+half split. \\
+\textbf{PhysioNet/CinC Challenge 2012} (PhysioNet, ODC-By
+1.0) & \texttt{physionet\_ihd}: in-hospital death & 27
+summaries of the first 48 hours, following the SAPS-I
+variable list: age; sex; ICU type; the minimum and maximum
+of heart rate, systolic blood pressure, temperature,
+respiratory rate, white cell count, glucose, potassium and
+sodium; the minimum of GCS, haematocrit and bicarbonate; the
+maximum of BUN, creatinine and bilirubin; total urine
+output; any mechanical ventilation & primary: sets A + B
+(development) against set C (held out). Sensitivity:
+coronary-care, cardiac-surgery and surgical ICUs against the
+medical ICU. \\
+\end{longtable}
+}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{The recalibration rows.} In every external region,
+  500 random rows (fixed seed) form the local recalibration
+  sample, and the remaining rows form the evaluation set.
+\item
+  \textbf{If CRASH-2 cannot be obtained.} The real-data
+  analysis proceeds with the other three data sets, and this
+  is reported.
+\end{itemize}
+
+\textbf{Missing data.}
+
+\begin{itemize}
+\tightlist
+\item
+  IST and CRASH-2: complete-case analysis on the predictors.
+  Excluded rows are counted per data set and split. In IST,
+  atrial fibrillation is missing for the 984 pilot-phase
+  patients (5.1 \%).
+\item
+  Sepsis: no missing values.
+\item
+  PhysioNet 2012: complete cases would lose most stays.
+  Inside each development subsample, medians are learned on
+  the development rows, and a missing-value indicator is
+  added for every variable missing in at least 5 \% of those
+  rows. Every arm gets the same imputed matrix.
+\item
+  A sensitivity analysis keeps the incomplete rows (IST,
+  CRASH-2) or uses the TFMs' native missing-value handling
+  (PhysioNet).
+\end{itemize}
+
+\subsubsection{10.2 Learning curves}\label{learning-curves}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Subsamples.} For each data set and outcome: B =
+  100 development subsamples at each n in \{200, 500, 1000,
+  3000\}, drawn by simple random sampling from the
+  development region. The seeds are derived from (data set,
+  split, n, b).
+\item
+  \textbf{Evaluation.} Each subsample is evaluated on the
+  \textbf{whole} external evaluation set.
+\item
+  \textbf{Arms.} All arms of Section 5.2 except the oracle,
+  with the categorical declarations of Section 5.1.
+\item
+  \textbf{Small regions.} If the development region holds
+  fewer than 3,000 rows, the largest n is the region size.
+\item
+  \textbf{Few events.} Subsamples with very few events are
+  kept.
+\item
+  \textbf{Estimands:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    empirical calibration slope and
+    calibration-in-the-large;
+  \item
+    empirical ICI, E50 and E90;
+  \item
+    Brier score and AUC;
+  \item
+    the empirical analogue of the calibration class
+    (reported as empirical, not true);
+  \item
+    the battery of Section 5.3 on the external evaluation
+    set.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{10.3 Localization and repair on real
+data}\label{localization-and-repair-on-real-data}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Localization.} \texttt{localize.external()} on the
+  external evaluation set for FLIC and the TFMs, with these
+  covariates: age band, sex, region (where present) and a
+  severity score (conscious state in IST, GCS in CRASH-2,
+  SAPS-I in PhysioNet).
+\item
+  \textbf{Repair.} The recalibration ladder of Section 5.5
+  is fitted on the 500-row local sample and evaluated on the
+  rest of the external region.
+\end{itemize}
+
+\subsubsection{10.4 Plasmode tier}\label{plasmode-tier}
+
+A known true risk is placed on real covariate distributions,
+with outcomes that no TFM could have seen during
+pretraining.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Truth model.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A main-effects logistic model is fitted once to the real
+    outcome on the full complete-case table, with
+    standardized design columns.
+  \item
+    Two terms of fixed size are then added on the logit
+    scale: a U-shaped term 0.4 (z\^{}2 - 1) in one
+    standardized continuous predictor, and an interaction
+    0.6 z\_a x\_b.
+  \item
+    The intercept is solved by bisection so that the mean p*
+    equals 10 \% and 30 \%.
+  \end{itemize}
+
+  {\def\LTcaptype{none} % do not increment counter
+  \begin{longtable}[]{@{}
+    >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+    >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+    >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+  \toprule\noalign{}
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Data set
+  \end{minipage} &
+  \begin{minipage}[b]{\linewidth}\raggedright
+  U-shaped term
+  \end{minipage} &
+  \begin{minipage}[b]{\linewidth}\raggedright
+  Interaction
+  \end{minipage} \\
+  \midrule\noalign{}
+  \endhead
+  \bottomrule\noalign{}
+  \endlastfoot
+  IST (\texttt{ist\_dd6}, primary) & systolic blood pressure
+  & age x impaired consciousness \\
+  CRASH-2 & systolic blood pressure & GCS x penetrating
+  injury \\
+  PhysioNet 2012 & maximum heart rate & age x mechanical
+  ventilation \\
+  \end{longtable}
+  }
+\item
+  \textbf{Design.} R = 200 replicates per n in \{200, 500,
+  1000, 3000\}, with development subsamples from the
+  development region and evaluation on the external
+  evaluation set.
+\item
+  \textbf{Analyses.} The oracle estimands, the summaries of
+  research questions Q1-Q3 (as secondary checks) and the
+  size of the battery are computed as in the simulation.
+\item
+  \textbf{Frozen truths.} Each truth is stored with a
+  SHA-256 of p* and checked before each use.
+\end{itemize}
+
+\subsubsection{10.5 Reporting}\label{reporting}
+
+The real-data analyses are reported following TRIPOD+AI
+(Collins et al.~2024). Real-data results are descriptive and
+supportive; they do not enter the labels of Section 7.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{11. Primary, secondary and exploratory
+analyses}\label{primary-secondary-and-exploratory-analyses}
+
+\textbf{Primary.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The oracle estimands: the true calibration slope b*, the
+  true intercept a* and the true ICI of every arm in the 48
+  core scenarios, with MCSE.
+\item
+  The paired differences in true ICI, TFM minus FLIC, per
+  core scenario: the mean paired difference with its MCSE
+  and 95 \% interval, labelled better, worse, equivalent or
+  inconclusive by the rule and margin of Section 7.0.
+\item
+  The answers to research questions Q1-Q5, by the reporting
+  rules of Sections 7.1-7.5.
+\item
+  \textbf{The minimum-n-for-calibration table} (Section
+  4.5), a planned primary output for practitioners: for each
+  arm, at each event rate (3, 10 and 30 \%) and in each
+  shape, the smallest development n at which the arm meets
+  each calibration class in at least 80 \% of replicates,
+  beside Riley's minimum n and the EPV. The pooled row of
+  each event rate gives the largest of the four shapes. The
+  same table with the lower 95 \% limit of the proportion,
+  and at half and double the thresholds, goes to the
+  supplement. The table is descriptive; its only labels are
+  those of Q2.
+\item
+  \textbf{The robustness map} of the random-design tier: the
+  regions of Section 6.4 where each TFM is better or worse
+  than FLIC by more than 0.01, with the robustness check of
+  Section 7.6 (Q6).
+\end{enumerate}
+
+\textbf{Secondary.}
+
+\begin{itemize}
+\tightlist
+\item
+  The rest of the meta-model of Section 6.4: partial
+  effects, the D\_logb maps, and the detection and size
+  maps.
+\item
+  All other oracle and empirical estimands,
+  \texttt{true\_ll\_ici}, and empirical against true ICI.
+\item
+  Size and detection of every test:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    the oracle nulls (the main size study);
+  \item
+    each arm's Y*;
+  \item
+    the detection curves;
+  \item
+    the validation-size subsamples;
+  \item
+    Stukel's size beside its power;
+  \item
+    the auxiliary size study.
+  \end{itemize}
+\item
+  Localization: the proportion of replicates in which COV is
+  named, on S3 and T3, for each arm. As a reference for each
+  arm: the oracle share of the variance of logit(p*) not
+  explained by a smooth function of logit(p-hat). A large
+  share means that a covariate-level error truly exists for
+  that arm.
+\item
+  The full recalibration ladder (R0-R3, m = 100 and 500) and
+  the NPV of the test-guided rule.
+\item
+  The temperature arms: the paired effect of the softmax
+  temperature on b*, a*, mean risk and true ICI, within
+  TabPFN-3.5 and within TabICLv2.
+\item
+  The counts of failed, degenerate and not-run fits, and of
+  the flags of Section 8.2.
+\item
+  Real data (Section 10).
+\end{itemize}
+
+\textbf{Exploratory} (labelled as such in the paper):
+
+\begin{itemize}
+\tightlist
+\item
+  the stress set beyond the severity ladder;
+\item
+  the legacy Real-TabPFN-2 arm;
+\item
+  prediction instability;
+\item
+  any analysis not listed in this document.
+\end{itemize}
+
+\textbf{Main-text figures and tables} are planned as:
+
+\begin{itemize}
+\tightlist
+\item
+  a design schematic;
+\item
+  b* against n;
+\item
+  oracle calibration curves;
+\item
+  minimum n by arm, and the minimum-n-for-calibration table;
+\item
+  the random-design maps: where each TFM is better or worse
+  than FLIC;
+\item
+  detection curves with a size inset;
+\item
+  a recalibration slopegraph;
+\item
+  real-data learning curves and a localization map;
+\item
+  a summary-of-findings table (one row per research
+  question);
+\item
+  a size table (every test on every arm).
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{12. Deviations policy}\label{deviations-policy}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{DEVIATIONS.md} is deposited empty with this
+  registration, and again with each later version of the
+  project archive.
+\item
+  \textbf{Recording a change.} Every change after the freeze
+  is recorded there with: the date; what changed; why;
+  whether any main-run result had been seen when the
+  decision was made; and its expected effect.
+\item
+  \textbf{Minor deviations} are engineering changes that do
+  not alter an estimand, a sample, a model setting or a
+  decision rule. An example is a bug fix that is verified
+  not to change stored predictions. They are listed and
+  summarized in the supplement.
+\item
+  \textbf{Major deviations} are any change to the DGPs,
+  arms, settings, replicate counts, estimands, thresholds,
+  margins, research questions or reporting rules. They are
+  listed in the paper. Results that depend on a major
+  deviation are labelled exploratory, and the pre-registered
+  analysis is also reported where it can be run.
+\item
+  \textbf{Bugs.} A bug found after results are seen is
+  fixed, the affected parts are rerun in full, and both the
+  bug and the rerun are recorded.
+\item
+  \textbf{Device changes.} A change of device for a scenario
+  group under the rule of Section 9.3 is not a deviation,
+  but every scenario's device is reported.
+\item
+  \textbf{``Pre-registered.''} The paper uses the word only
+  for the analyses in this document, and only because the
+  registration date precedes the main run.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{13. Software and
+hardware}\label{software-and-hardware}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.4333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Component
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Version
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Python (both environments) & 3.11.15 \\
+PyTorch (CUDA build) and CUDA runtime & 2.13.0+cu126, CUDA
+12.6 (NVIDIA driver 591.86) \\
+numpy, scipy, pandas, pyarrow & 2.4.6, 1.17.1, 2.3.3,
+24.0.0 \\
+scikit-learn, LightGBM (Python) & 1.9.1, 4.7.0 \\
+tabpfn & 9.1.0 \\
+autogluon.tabular (for \texttt{MitraClassifier}),
+transformers, huggingface-hub & 1.6.3, 5.19.0, 1.33.0 \\
+tabicl & 2.2.0 \\
+R & 4.4.1 \\
+ebrahim.gof & 2.10.0 (release branch, commit 19480aa; the
+build is checked by the SHA-256 of its code) \\
+givitiR, callr, logistf, glmnet, mgcv, pmsampsize & 1.3,
+3.7.6, 1.26.1, 4.1-10, 1.9-4, 1.1.3 \\
+arrow, data.table, digest, jsonlite & 23.0.1.2, 1.18.2.1,
+0.6.39, 2.0.0 \\
+Hardware & Windows 11 Pro; AMD Ryzen 9 3900X (12 cores, 24
+threads); 32 GB RAM; NVIDIA GeForce GTX 1660 Ti 6 GB
+(Turing; bfloat16 emulated) \\
+\end{longtable}
+}
+
+\textbf{Model checkpoints.} Revision = the Hugging Face
+commit of the repository in the project cache.
+
+\begin{itemize}
+\tightlist
+\item
+  TabPFN-3.5, standard (arms \texttt{tabpfn},
+  \texttt{tabpfn\_t1}):
+  \texttt{tabpfn-v3.5-20260909.safetensors}, repository
+  \texttt{Prior-Labs/tabpfn\_3\_5}, revision
+  \texttt{06bf2ba35c80a92a3b9abb436b99cf49e7a0365e}.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SHA-256
+    \texttt{ece4d67eadfea42eb0e610df5189bea60cb7f31073d81e9c7a019b76eacf0be3}
+  \end{itemize}
+\item
+  TabPFN-3.5-Fast (recorded, not used):
+  \texttt{tabpfn-v3.5-fast-20260909.safetensors}, same
+  repository and revision.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SHA-256
+    \texttt{14e0b81285bca7a6d1ef121169f27f651f76dff49cad6c0b8779d5c836018550}
+  \end{itemize}
+\item
+  Real-TabPFN-2 (arm \texttt{tabpfn\_legacy}):
+  \texttt{tabpfn-v2-classifier-finetuned-zk73skhh.ckpt},
+  repository \texttt{Prior-Labs/TabPFN-v2-clf}.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SHA-256
+    \texttt{cf8c519c01eaf1613ee91239006d57b1c806ff5f23ac1aeb1315ba1015210e49}
+  \end{itemize}
+\item
+  TabICLv2 (arms \texttt{tabicl}, \texttt{tabicl\_t1}):
+  \texttt{tabicl-classifier-v2-20260212.ckpt}, repository
+  \texttt{jingang/TabICL}, revision
+  \texttt{4dcd344ece2c00be9e831fdd35bed57b5ad83e19}.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SHA-256
+    \texttt{bdc7dbd5e4ff21f8f0456fcf90c6b7cdf72dbea960f2d05b19bec19f9b3d4ed0}
+  \end{itemize}
+\item
+  Mitra-v2 (arm \texttt{mitra}): \texttt{model.safetensors},
+  repository \texttt{autogluon/mitra-classifier-2}, revision
+  \texttt{edada0d20759c58ada8c8605c25f22f6e98ea5f0}.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    SHA-256
+    \texttt{5ffab0e2cf52f61c5b7c7eb1e8542996736d1023a0212190cc09abc2119a1e09}
+  \end{itemize}
+\end{itemize}
+
+At the start of the main run, all of these are written to
+\texttt{results/environment.json} and checked against this
+table. A mismatch stops the run.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{14. Archive and availability
+plan}\label{archive-and-availability-plan}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{This pre-registration} is registered on OSF
+  Registries before the main run.
+\item
+  \textbf{Code} goes in a public GitHub repository under the
+  MIT licence; \textbf{results, figures and tables} under CC
+  BY 4.0. The repository holds \texttt{CITATION.cff} and
+  \texttt{.zenodo.json} with the author and his ORCID.
+\item
+  \textbf{Zenodo}: a version DOI from a GitHub release. The
+  paper cites the concept DOI.
+\item
+  \textbf{The ebrahim.gof 2.10.0 source} used here (commit
+  19480aa) is archived with the code.
+\end{itemize}
+
+\textbf{Outputs for reuse (aim A8).}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{(a) An open benchmark of calibrated and
+  miscalibrated predictions.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The full per-replicate prediction and test dataset of
+    the simulation (the 58 scenarios and the random
+    designs): for every evaluation record, p*, Y, the
+    covariates where stored, and the p-hat and the
+    exact-null Y* of every arm, as float32 parquet; and
+    every row of the test layer.
+  \item
+    It is deposited on Zenodo under \textbf{CC BY 4.0} as
+    its own record, with its own DOI, so that others can
+    test a new calibration method or test on exactly the
+    same predictions, with the truth known.
+  \item
+    It comes with a \textbf{loader}
+    (\texttt{code/benchmark\_loader.py}: wide and long views
+    of a replicate, iteration over a family, the study's own
+    test rows) and a \textbf{data dictionary} of every
+    column and metadata field, with the design tables
+    \texttt{scenarios.csv} and \texttt{random\_designs.csv}.
+  \end{itemize}
+\item
+  \textbf{(b) A calibration audit in one call.}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    R: \texttt{ebrahim.gof::run.all.external()} followed by
+    \texttt{localize.external()}, packaged as the recipe
+    \texttt{R/audit\_calibration.R}
+    (\texttt{audit\_calibration(y,\ p,\ X)}).
+  \item
+    Python: \texttt{code/audit\_calibration.py}, a
+    command-line tool and function that takes y and p (and
+    optionally X) from any model and runs the R recipe
+    through a temporary file; rpy2 is not needed.
+  \item
+    Both are in the code archive, with an example on one
+    benchmark replicate.
+  \end{itemize}
+\item
+  \textbf{(c) A minimum-n-for-calibration table} by event
+  rate for each model (Section 11, primary output 4),
+  deposited as a csv beside the paper's table.
+\item
+  \textbf{(d) A TRIPOD+AI alignment table}: each TRIPOD+AI
+  item (Collins et al.~2024) that applies to the real-data
+  analyses (Section 10.5), with the section of the paper or
+  supplement that answers it, or the reason it does not
+  apply.
+\end{itemize}
+
+\textbf{What is never archived.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{TabPFN weights.} TabPFN-3.5 is used under the
+  TABPFN-3.5 License v1.0, which allows non-commercial
+  research use only and does not allow redistribution. No
+  archive of this study holds any TabPFN weights. The
+  archive holds instead
+  \texttt{code/get\_tabpfn\_weights.py}, which prints the
+  licence notice, downloads the checkpoints from Prior Labs
+  after the users have accepted the licence themselves, and
+  checks their SHA-256 against Section 13. The other
+  checkpoints are referenced by repository, file name,
+  revision and SHA-256.
+\item
+  \textbf{Real patient data.} They are not redistributed.
+  The repository gives loaders and access instructions.
+  Derived per-patient predictions on real data are deposited
+  only for data sets whose licence allows redistribution
+  with attribution (Sepsis: CC BY 4.0; PhysioNet 2012:
+  ODC-By 1.0). For IST and CRASH-2, only aggregate results
+  are deposited.
+\item
+  \textbf{A preprint} is posted when the results and the
+  manuscript are final.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{15. References}\label{references}
+
+\begin{itemize}
+\tightlist
+\item
+  Austin PC, Steyerberg EW (2019). The Integrated
+  Calibration Index (ICI) and related metrics for
+  quantifying the calibration of logistic regression models.
+  \emph{Statistics in Medicine} 38:4051-4065.
+  doi:10.1002/sim.8281
+\item
+  Collins GS, et al.~(2024). TRIPOD+AI statement: updated
+  guidance for reporting clinical prediction models that use
+  regression or machine learning methods. \emph{BMJ}
+  385:e078378. doi:10.1136/bmj-2023-078378
+\item
+  Ebrahim EK, Hussein OA, El-Kotory A (2026). {[}EDGE{]} A
+  grouped calibration test for logistic regression that
+  tolerates a few corrupted records. arXiv:2608.20511.
+  doi:10.48550/arXiv.2608.20511
+\item
+  Hollmann N, Müller S, Purucker L, Krishnakumar A, Körfer
+  M, Hoo SB, Schirrmeister RT, Hutter F (2025). Accurate
+  predictions on small data with a tabular foundation model.
+  \emph{Nature} 637:319-326. doi:10.1038/s41586-024-08328-6
+\item
+  Morris TP, White IR, Crowther MJ (2019). Using simulation
+  studies to evaluate statistical methods. \emph{Statistics
+  in Medicine} 38:2074-2102. doi:10.1002/sim.8086
+\item
+  Nattino G, Finazzi S, Bertolini G (2014). A new
+  calibration test and a reappraisal of the calibration belt
+  for the assessment of prediction models based on
+  dichotomous outcomes. \emph{Statistics in Medicine}
+  33:2390-2407. doi:10.1002/sim.6100
+\item
+  Osius G, Rojek D (1992). Normal goodness-of-fit tests for
+  multinomial models with large degrees of freedom.
+  \emph{Journal of the American Statistical Association}
+  87:1145-1152. doi:10.1080/01621459.1992.10476271
+\item
+  Perel P, et al.~(2012). Predicting early death in patients
+  with traumatic bleeding: development and validation of
+  prognostic model. \emph{BMJ} 345:e5166.
+  doi:10.1136/bmj.e5166
+\item
+  Prior Labs (2026). TabPFN-3.5 model card and TABPFN-3.5
+  License v1.0. Hugging Face repository
+  Prior-Labs/tabpfn\_3\_5 (checkpoint tabpfn-v3.5-20260909).
+\item
+  Puhr R, Heinze G, Nold M, Lusa L, Geroldinger A (2017).
+  Firth's logistic regression with rare events: accurate
+  effect estimates and predictions? \emph{Statistics in
+  Medicine} 36:2302-2317. doi:10.1002/sim.7273
+\item
+  Qu J, Holzmüller D, Varoquaux G, Le Morvan M (2026).
+  TabICLv2: A better, faster, scalable, and open tabular
+  foundation model. arXiv:2602.11139.
+\item
+  Riley RD, et al.~(2020). Calculating the sample size
+  required for developing a clinical prediction model.
+  \emph{BMJ} 368:m441. doi:10.1136/bmj.m441
+\item
+  Riley RD, et al.~(2021). Minimum sample size for external
+  validation of a clinical prediction model with a binary
+  outcome. \emph{Statistics in Medicine} 40:4230-4251.
+  doi:10.1002/sim.9025
+\item
+  Riley RD, Collins GS (2023). Stability of clinical
+  prediction models developed using statistical or machine
+  learning methods. \emph{Biometrical Journal} 65:2200302.
+  doi:10.1002/bimj.202200302
+\item
+  Siepe BS, Bartoš F, Morris TP, Boulesteix A-L, Heck DW,
+  Pawel S (2024). Simulation studies for methodological
+  research in psychology: a standardized template for
+  planning, preregistration, and reporting.
+  \emph{Psychological Methods}. doi:10.1037/met0000695
+\item
+  Stukel TA (1988). Generalized logistic models.
+  \emph{Journal of the American Statistical Association}
+  83:426-431. doi:10.1080/01621459.1988.10478613
+\item
+  Tao Y, Zhang X, Liu X, Han B, Maddix D, et al.~(2026).
+  Mitra-v2 technical report. arXiv:2609.04540.
+\item
+  Van Calster B, Nieboer D, Vergouwe Y, De Cock B, Pencina
+  MJ, Steyerberg EW (2016). A calibration hierarchy for risk
+  models was defined: from utopia to empirical data.
+  \emph{Journal of Clinical Epidemiology} 74:167-176.
+  doi:10.1016/j.jclinepi.2015.12.005
+\end{itemize}
+
+\textbf{Checks.}
+
+\begin{itemize}
+\tightlist
+\item
+  The journal DOIs were checked on Crossref: on 2026-10-06,
+  and on 2026-10-07 for Osius-Rojek, Stukel, Hollmann et
+  al.~and Siepe et al.
+\item
+  The arXiv titles and authors were checked on their arXiv
+  records on 2026-10-07.
+\item
+  The dataset DOIs were checked on DataCite on 2026-10-06.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Appendix A. Scenario
+table}\label{appendix-a.-scenario-table}
+
+Produced by \texttt{code/dgp.py\ build}
+(\texttt{code/scenarios.csv}):
+
+\begin{itemize}
+\tightlist
+\item
+  kappa and alpha are solved on 10\^{}6 fixed draws;
+\item
+  the realized prevalence equals pi to 2e-15 in every row;
+\item
+  EPV = n pi / p;
+\item
+  the Riley minimum n comes from R \texttt{pmsampsize}
+  (shrinkage 0.9, Cox-Snell R\^{}2 from the oracle AUC).
+\end{itemize}
+
+The scenario name gives the family, the event rate (pi03 = 3
+\%) and n.~Shapes, links and gamma are in Sections 3.2 and
+3.6.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1067}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1867}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1067}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1067}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1067}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1067}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1467}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+id
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+scenario
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+N\_eval
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+kappa
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+alpha
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+oracle AUC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+EPV
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Riley min n
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & S1\_pi03\_n200 & 3334 & 0.7327 & -4.4586 & 0.810 & 0.75
+& 1662 \\
+2 & S1\_pi03\_n500 & 3334 & 0.7327 & -4.4586 & 0.810 & 1.88
+& 1662 \\
+3 & S1\_pi03\_n1000 & 3334 & 0.7327 & -4.4586 & 0.810 & 3.75
+& 1662 \\
+4 & S1\_pi03\_n3000 & 3334 & 0.7327 & -4.4586 & 0.810 &
+11.25 & 1662 \\
+5 & S1\_pi10\_n200 & 1000 & 0.7327 & -3.0255 & 0.800 & 2.50
+& 609 \\
+6 & S1\_pi10\_n500 & 1000 & 0.7327 & -3.0255 & 0.800 & 6.25
+& 609 \\
+7 & S1\_pi10\_n1000 & 1000 & 0.7327 & -3.0255 & 0.800 &
+12.50 & 609 \\
+8 & S1\_pi10\_n3000 & 1000 & 0.7327 & -3.0255 & 0.800 &
+37.50 & 609 \\
+9 & S1\_pi30\_n200 & 1000 & 0.7327 & -1.3603 & 0.788 & 7.50
+& 323 \\
+10 & S1\_pi30\_n500 & 1000 & 0.7327 & -1.3603 & 0.788 &
+18.75 & 323 \\
+11 & S1\_pi30\_n1000 & 1000 & 0.7327 & -1.3603 & 0.788 &
+37.50 & 323 \\
+12 & S1\_pi30\_n3000 & 1000 & 0.7327 & -1.3603 & 0.788 &
+112.50 & 323 \\
+13 & S2\_pi03\_n200 & 3334 & 0.6230 & -4.4357 & 0.827 & 0.75
+& 1454 \\
+14 & S2\_pi03\_n500 & 3334 & 0.6230 & -4.4357 & 0.827 & 1.88
+& 1454 \\
+15 & S2\_pi03\_n1000 & 3334 & 0.6230 & -4.4357 & 0.827 &
+3.75 & 1454 \\
+16 & S2\_pi03\_n3000 & 3334 & 0.6230 & -4.4357 & 0.827 &
+11.25 & 1454 \\
+17 & S2\_pi10\_n200 & 1000 & 0.6230 & -2.9203 & 0.800 & 2.50
+& 609 \\
+18 & S2\_pi10\_n500 & 1000 & 0.6230 & -2.9203 & 0.800 & 6.25
+& 609 \\
+19 & S2\_pi10\_n1000 & 1000 & 0.6230 & -2.9203 & 0.800 &
+12.50 & 609 \\
+20 & S2\_pi10\_n3000 & 1000 & 0.6230 & -2.9203 & 0.800 &
+37.50 & 609 \\
+21 & S2\_pi30\_n200 & 1000 & 0.6230 & -1.2353 & 0.769 & 7.50
+& 349 \\
+22 & S2\_pi30\_n500 & 1000 & 0.6230 & -1.2353 & 0.769 &
+18.75 & 349 \\
+23 & S2\_pi30\_n1000 & 1000 & 0.6230 & -1.2353 & 0.769 &
+37.50 & 349 \\
+24 & S2\_pi30\_n3000 & 1000 & 0.6230 & -1.2353 & 0.769 &
+112.50 & 349 \\
+25 & S3\_pi03\_n200 & 3334 & 0.6142 & -4.4168 & 0.814 & 0.75
+& 1612 \\
+26 & S3\_pi03\_n500 & 3334 & 0.6142 & -4.4168 & 0.814 & 1.88
+& 1612 \\
+27 & S3\_pi03\_n1000 & 3334 & 0.6142 & -4.4168 & 0.814 &
+3.75 & 1612 \\
+28 & S3\_pi03\_n3000 & 3334 & 0.6142 & -4.4168 & 0.814 &
+11.25 & 1612 \\
+29 & S3\_pi10\_n200 & 1000 & 0.6142 & -2.9651 & 0.800 & 2.50
+& 609 \\
+30 & S3\_pi10\_n500 & 1000 & 0.6142 & -2.9651 & 0.800 & 6.25
+& 609 \\
+31 & S3\_pi10\_n1000 & 1000 & 0.6142 & -2.9651 & 0.800 &
+12.50 & 609 \\
+32 & S3\_pi10\_n3000 & 1000 & 0.6142 & -2.9651 & 0.800 &
+37.50 & 609 \\
+33 & S3\_pi30\_n200 & 1000 & 0.6142 & -1.2956 & 0.783 & 7.50
+& 323 \\
+34 & S3\_pi30\_n500 & 1000 & 0.6142 & -1.2956 & 0.783 &
+18.75 & 323 \\
+35 & S3\_pi30\_n1000 & 1000 & 0.6142 & -1.2956 & 0.783 &
+37.50 & 323 \\
+36 & S3\_pi30\_n3000 & 1000 & 0.6142 & -1.2956 & 0.783 &
+112.50 & 323 \\
+37 & S4\_pi03\_n200 & 3334 & 0.6697 & -4.3699 & 0.798 & 0.75
+& 1845 \\
+38 & S4\_pi03\_n500 & 3334 & 0.6697 & -4.3699 & 0.798 & 1.88
+& 1845 \\
+39 & S4\_pi03\_n1000 & 3334 & 0.6697 & -4.3699 & 0.798 &
+3.75 & 1845 \\
+40 & S4\_pi03\_n3000 & 3334 & 0.6697 & -4.3699 & 0.798 &
+11.25 & 1845 \\
+41 & S4\_pi10\_n200 & 1000 & 0.6697 & -3.0419 & 0.800 & 2.50
+& 609 \\
+42 & S4\_pi10\_n500 & 1000 & 0.6697 & -3.0419 & 0.800 & 6.25
+& 609 \\
+43 & S4\_pi10\_n1000 & 1000 & 0.6697 & -3.0419 & 0.800 &
+12.50 & 609 \\
+44 & S4\_pi10\_n3000 & 1000 & 0.6697 & -3.0419 & 0.800 &
+37.50 & 609 \\
+45 & S4\_pi30\_n200 & 1000 & 0.6697 & -1.5964 & 0.814 & 7.50
+& 323 \\
+46 & S4\_pi30\_n500 & 1000 & 0.6697 & -1.5964 & 0.814 &
+18.75 & 323 \\
+47 & S4\_pi30\_n1000 & 1000 & 0.6697 & -1.5964 & 0.814 &
+37.50 & 323 \\
+48 & S4\_pi30\_n3000 & 1000 & 0.6697 & -1.5964 & 0.814 &
+112.50 & 323 \\
+49 & T1\_pi10\_n500 & 1000 & 0.8205 & -3.0442 & 0.800 & 6.25
+& 609 \\
+50 & T1\_pi10\_n3000 & 1000 & 0.8205 & -3.0442 & 0.800 &
+37.50 & 609 \\
+51 & T2\_pi10\_n500 & 1000 & 0.7327 & -3.0255 & 0.800 & 1.67
+& 2284 \\
+52 & T2\_pi10\_n3000 & 1000 & 0.7327 & -3.0255 & 0.800 &
+10.00 & 2284 \\
+53 & T3\_pi10\_n500 & 1000 & 0.5992 & -2.9981 & 0.800 & 4.17
+& 914 \\
+54 & T3\_pi10\_n3000 & 1000 & 0.5992 & -2.9981 & 0.800 &
+25.00 & 914 \\
+55 & T4a\_pi10\_n500 & 1000 & 0.6762 & -2.9646 & 0.800 &
+6.25 & 609 \\
+56 & T4a\_pi10\_n3000 & 1000 & 0.6762 & -2.9646 & 0.800 &
+37.50 & 609 \\
+57 & T4b\_pi10\_n500 & 1000 & 0.5297 & -2.8686 & 0.800 &
+6.25 & 609 \\
+58 & T4b\_pi10\_n3000 & 1000 & 0.5297 & -2.8686 & 0.800 &
+37.50 & 609 \\
+\end{longtable}
+}
+
+\subsection{Appendix B. The random
+designs}\label{appendix-b.-the-random-designs}
+
+Produced by \texttt{code/dgp\_random.py\ build\ -\/-D\ 1000}
+(\texttt{code/random\_designs.csv}, one row per design with
+its full specification). Every design was solved: the
+realized prevalence equals pi to 6e-14 and the oracle AUC
+equals its target to 2e-10, on 200,000 calibration draws per
+design.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Factor
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+min
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+10 \%
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+median
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+90 \%
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+max
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+event rate pi & 0.020 & 0.027 & 0.088 & 0.290 & 0.400 \\
+development n & 150 & 200 & 738 & 2732 & 3993 \\
+predictors p & 4 & 6 & 17 & 28 & 30 \\
+correlation rho & 0.00 & 0.06 & 0.29 & 0.53 & 0.60 \\
+oracle AUC & 0.650 & 0.673 & 0.774 & 0.870 & 0.900 \\
+w\_nl & 0.00 & 0.10 & 0.51 & 0.91 & 1.00 \\
+w\_int & 0.00 & 0.11 & 0.51 & 0.92 & 1.00 \\
+w\_link & 0.00 & 0.10 & 0.50 & 0.90 & 1.00 \\
+discrete fraction & 0.00 & 0.05 & 0.24 & 0.44 & 0.50 \\
+N\_eval & 1000 & 1000 & 1130 & 3730 & 4996 \\
+expected development events (n pi) & 3.2 & 12.6 & 67.6 &
+369.5 & 1255.4 \\
+EPV & 0.12 & 0.59 & 4.01 & 26.11 & 187.37 \\
+share of p* \textgreater= 0.5 & 0.000 & 0.000 & 0.014 &
+0.165 & 0.337 \\
+\end{longtable}
+}
+
+\begin{itemize}
+\tightlist
+\item
+  The 1,000 designs hold 3,111 binary and 1,052 categorical
+  predictors; 594 designs have at least one categorical
+  predictor.
+\item
+  658 designs have p \textgreater{} 12, so DeepGOF-1 uses
+  its axes reading there.
+\item
+  TabPFN-3.5 runs on the GPU in 821 designs and on a CPU
+  worker in 179.
+\item
+  Mitra-v2 is recorded as ``does not fit in 6 GB GPU
+  memory'' in 170 designs.
+\item
+  In 722 designs n is below Riley's minimum n, and 67
+  designs expect fewer than 10 development events.
+\end{itemize}
+
+\end{document}

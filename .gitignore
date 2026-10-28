@@ -1,0 +1,18 @@
+# never commit data, weights, caches or run outputs
+data/raw/*
+!data/raw/MANIFEST_SHA256.txt
+data/clean/
+models/
+.cache/
+.venv*/
+rlib/
+setup/src/
+results/
+logs/
+analysis/tables/
+analysis/logs/
+analysis/figures/out/
+__pycache__/
+*.pyc
+.env
+*.lock

@@ -1,0 +1,41 @@
+{
+  "title": "Reproduction materials: Tabular foundation models are not a shortcut to calibrated clinical risk prediction",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "language": "eng",
+  "creators": [
+    {
+      "name": "Ebrahim, Ebrahim Khaled",
+      "affiliation": "Department of Applied Statistics, Faculty of Business, Alexandria University, Alexandria, Egypt",
+      "orcid": "0009-0006-7839-8778"
+    }
+  ],
+  "description": "<p>Code for the article \"Tabular foundation models are not a shortcut to calibrated clinical risk prediction: a pre-registered simulation against the true risk\" by Ebrahim Khaled Ebrahim. The study was pre-registered on OSF Registries (doi:10.17605/OSF.IO/8HMTZ) before the main run.</p><p>The archive holds (1) the simulation engine: the 58 scenarios of the core and stress designs and the 1,000-design random tier, the model arms (logistic regression, Firth logistic regression with intercept correction, ridge, GAM, LightGBM with Platt scaling, TabPFN-3.5, TabICLv2 and Mitra-v2), the recalibration ladder and the true-risk estimands; (2) the goodness-of-fit layer in R, which runs the external-validation battery of ebrahim.gof 2.10.0 on the frozen predictions, with the package source at the commit used; (3) the real-data loaders and runner for the International Stroke Trial, CRASH-2, the Sepsis Survival Minimal Clinical Records and the PhysioNet/CinC Challenge 2012; (4) the scripts that produce every table and figure of the article and its supplement; (5) the registered protocol and the log of deviations from it; (6) the recorded software environment.</p><p>No real data and no model weights are included. The real data are available from their providers under their own terms; the archive holds the loaders, a download script for the two open data sets and the SHA-256 of every file used. TabPFN-3.5 weights may not be redistributed; a script downloads them after the user has accepted the licence and checks their checksums.</p><p>The per-replicate predictions and test results are a separate record (the benchmark record). Code is under the MIT licence; the protocol and documents are under CC BY 4.0. See README.md for how to reproduce each result.</p>",
+  "keywords": [
+    "calibration",
+    "tabular foundation models",
+    "clinical prediction models",
+    "sample size",
+    "goodness-of-fit tests",
+    "pre-registration",
+    "simulation study",
+    "TabPFN",
+    "recalibration"
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "10.17605/OSF.IO/8HMTZ",
+      "relation": "references",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.32614/CRAN.package.ebrahim.gof",
+      "relation": "requires",
+      "scheme": "doi",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Code: MIT licence. Pre-registration and documents: CC BY 4.0. The bundled ebrahim.gof source keeps its GPL-3 licence. No data from the International Stroke Trial, CRASH-2, the Sepsis Survival Minimal Clinical Records or the PhysioNet/CinC Challenge 2012, and no model weights, are included."
+}

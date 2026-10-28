@@ -1,0 +1,32 @@
+{
+ "time": "20261015_005259",
+ "code_hash": "8b6ca6bf29411570",
+ "argv": [
+  "code/run.py",
+  "--scenarios",
+  "R0276",
+  "--reps",
+  "1",
+  "--models",
+  "classical",
+  "--n-workers",
+  "1",
+  "--threads",
+  "1"
+ ],
+ "host": "author-workstation",
+ "python": "3.11.15",
+ "platform": "Windows-10-10.0.26200-SP0",
+ "numpy": "2.4.6",
+ "scipy": "1.17.1",
+ "pandas": "2.3.3",
+ "pyarrow": "24.0.0",
+ "lightgbm": "4.7.0",
+ "scikit-learn": "1.9.1",
+ "torch": "2.13.0",
+ "tabpfn": "9.0.0",
+ "tabicl": null,
+ "autogluon.tabular": "1.6.3",
+ "huggingface_hub": "1.32.0",
+ "cuda_available": false
+}

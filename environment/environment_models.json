@@ -1,0 +1,44 @@
+{
+ "torch": "2.13.0+cu126",
+ "cuda": "12.6",
+ "gpu": "NVIDIA GeForce GTX 1660 Ti",
+ "bf16_supported": true,
+ "arms": {
+  "tabpfn_v2": {
+   "status": "ok",
+   "first_call_s": 11.55,
+   "mean_p": 0.18560481071472168,
+   "note": "n_estimators=auto; softmax_temperature=auto"
+  },
+  "tabicl_v2": {
+   "status": "ok",
+   "first_call_s": 36.76,
+   "mean_p": 0.186770960688591,
+   "note": "n_estimators=8; softmax_temperature=0.9"
+  },
+  "mitra_v2": {
+   "status": "ok",
+   "first_call_s": 107.33,
+   "mean_p": 0.19779761135578156,
+   "note": "fine_tune=False; n_estimators=1; context=all n rows"
+  }
+ },
+ "tabpfn_v35_in_cache": false,
+ "weight_files": [
+  {
+   "path": "models/tabpfn/tabpfn-v2-classifier-finetuned-zk73skhh.ckpt",
+   "bytes": 29009539,
+   "sha256": "cf8c519c01eaf1613ee91239006d57b1c806ff5f23ac1aeb1315ba1015210e49"
+  },
+  {
+   "path": "models/hf/hub/models--autogluon--mitra-classifier-2/snapshots/edada0d20759c58ada8c8605c25f22f6e98ea5f0/model.safetensors",
+   "bytes": 302717904,
+   "sha256": "5ffab0e2cf52f61c5b7c7eb1e8542996736d1023a0212190cc09abc2119a1e09"
+  },
+  {
+   "path": "models/hf/hub/models--jingang--TabICL/snapshots/4dcd344ece2c00be9e831fdd35bed57b5ad83e19/tabicl-classifier-v2-20260212.ckpt",
+   "bytes": 110368038,
+   "sha256": "bdc7dbd5e4ff21f8f0456fcf90c6b7cdf72dbea960f2d05b19bec19f9b3d4ed0"
+  }
+ ]
+}

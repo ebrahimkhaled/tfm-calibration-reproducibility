@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "Reproduction materials: Tabular foundation models are not a shortcut to calibrated clinical risk prediction"
+type: software
+version: 1.0.0
+date-released: 2026-10-28
+license: MIT
+authors:
+  - family-names: Ebrahim
+    given-names: Ebrahim Khaled
+    affiliation: "Department of Applied Statistics, Faculty of Business, Alexandria University, Alexandria, Egypt"
+    orcid: "https://orcid.org/0009-0006-7839-8778"
+keywords:
+  - calibration
+  - tabular foundation models
+  - clinical prediction models
+  - sample size
+  - goodness-of-fit tests
+  - pre-registration
+  - simulation study
